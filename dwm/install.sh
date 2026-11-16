@@ -17,7 +17,8 @@ REPO=$(dirname "$DWM_DIR")
 BACKUP="$HOME/.dotfiles-backup-$(date +%Y%m%d-%H%M%S)"
 
 # pacotes essenciais (o ambiente nao sobe sem eles)
-ESSENCIAIS="dmenu st stow"
+ESSENCIAIS="dmenu stow"
+# o st vem compilado da pasta st/ do repositorio (scrollback, reflow, modo vi)
 # pacotes opcionais (o ambiente sobe sem eles; falha vira aviso)
 OPCIONAIS="git vim--no_x11 fastfetch cascadia-code"
 # pacotes stow aplicados no $HOME
@@ -66,6 +67,16 @@ done
 msg "Compilando o dwm"
 ( cd "$DWM_DIR" && rodar make clean && rodar make ) || { aviso "Falha ao compilar o dwm."; exit 1; }
 rodar doas make -C "$DWM_DIR" install || { aviso "Falha ao instalar o dwm."; exit 1; }
+
+# 3b. compilar e instalar o st do repositorio
+ST_DIR="$REPO/st"
+if pkg_info -e 'st-*' >/dev/null 2>&1; then
+	msg "Removendo o st do pacote (o do repositorio substitui)"
+	rodar doas pkg_delete st || aviso "Nao removeu o pacote st (seguindo)"
+fi
+msg "Compilando o st"
+( cd "$ST_DIR" && rodar make clean && rodar make ) || { aviso "Falha ao compilar o st."; exit 1; }
+rodar doas make -C "$ST_DIR" install || { aviso "Falha ao instalar o st."; exit 1; }
 
 # 4. dotfiles com stow (com backup do que atrapalhar)
 msg "Aplicando dotfiles: $STOW_PACOTES"

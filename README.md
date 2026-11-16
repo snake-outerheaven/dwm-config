@@ -10,6 +10,7 @@ fonte Cascadia Code e áreas de trabalho em algarismos romanos (I a IX).
 | Pasta / arquivo | O que é |
 |---|---|
 | `dwm/` | Código-fonte do dwm 6.4 com o `config.h` pronto. **Não é pacote do stow**: compila e instala |
+| `st/` | st 0.9.3 (base [st-flexipatch](https://github.com/bakkeby/st-flexipatch)) com jeito de alacritty. Compila e instala |
 | `dwm/install.sh` | Instala pacotes, compila o dwm e aplica o `x11` com o stow |
 | `x11/` | Pacote do stow: `.xinitrc`, `.xsession` (xenodm), `.Xresources` e `bin/dwm-status` |
 | `CORES.md` | Guia de todas as cores, para mexer sozinho |
@@ -26,7 +27,7 @@ sh install.sh        # instala de verdade
 startx
 ```
 
-O `install.sh` instala os pacotes essenciais (`dmenu`, `st`, `stow`) e os opcionais
+O `install.sh` instala os pacotes essenciais (`dmenu`, `stow`), compila o `st` do repositório e os opcionais
 (`git`, `vim`, `fastfetch`, `cascadia-code`), compila e instala o dwm e aplica o
 pacote `x11` com o stow. Arquivos que já existirem no `$HOME` vão para
 `~/.dotfiles-backup-DATA`; nada é apagado.
@@ -36,6 +37,8 @@ pacote `x11` com o stow. Arquivos que já existirem no `$HOME` vão para
 ```sh
 doas pkg_delete dwm                  # se o dwm do pacote estiver instalado
 cd dwm && make && doas make install
+doas pkg_delete st                   # se o st do pacote estiver instalado
+cd ../st && make && doas make install
 cd .. && stow --no-folding x11       # ~/.xinitrc, ~/.xsession, ~/.Xresources, ~/bin/dwm-status
 startx
 ```
@@ -60,6 +63,27 @@ Diffs de referência: coleção [bakkeby/patches](https://github.com/bakkeby/pat
 O swallow no OpenBSD usa `kvm_getprocs(3)` para achar o processo pai, por isso o
 `config.mk` liga `-lkvm` e as bibliotecas `xcb`/`xcb-res` (todas no base do X).
 Para desligar o swallow numa janela, use `noswallow = 1` na regra dela.
+
+## st (terminal)
+
+![st no dwm](docs/st.png)
+
+O dmenu fica como vem. O st foi ajustado para lembrar o alacritty:
+
+| Recurso | Como usar |
+|---|---|
+| Histórico de 10 000 linhas | Roda do mouse, ou `Shift+PageUp` / `Shift+PageDown` |
+| Reflow: o texto se reorganiza ao redimensionar | Automático |
+| Copiar / colar | `Ctrl+Shift+c` / `Ctrl+Shift+v` (seleção vai direto para o clipboard) |
+| Zoom da fonte | `Ctrl+=` / `Ctrl+-` / `Ctrl+0` |
+| Modo vi (selecionar com o teclado) | `Ctrl+Shift+Espaço` ou `Ctrl+Shift+Esc` |
+| Busca | `Ctrl+Shift+f` / `Ctrl+Shift+b` |
+| Linhas e caixas desenhadas pelo st | Automático (boxdraw) |
+| Cores Gruvbox | Do `config.h`; o `~/.Xresources` tem prioridade |
+
+Patches ligados em `st/patches.h`: reflow, scrollback (+ mouse), clipboard,
+keyboard_select, boxdraw, anysize e xresources. Para ligar ou desligar outro,
+mude o `0`/`1` lá e recompile (`cd st && make && doas make install`).
 
 ## Barra
 
