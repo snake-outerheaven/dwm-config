@@ -1,6 +1,6 @@
 # dwm-config
 
-dwm 6.4 para OpenBSD, em Gruvbox escuro com destaque amarelo apagado (`#b57614`),
+dwm 6.4 para OpenBSD, em amarelo Tango (`#edd400` sobre `#2e3436`),
 fonte Cascadia Code e áreas de trabalho em algarismos romanos (I a IX).
 
 ![dwm-config no OpenBSD](docs/dwm.png)
@@ -111,7 +111,7 @@ O `.xinitrc` roda o `~/.fehbg` a cada sessão. Para escolher a imagem:
 feh --bg-fill ~/flores.jpg    # mostra agora e grava o ~/.fehbg
 ```
 
-Sem `~/.fehbg`, fica o fundo sólido `#282828`.
+Sem `~/.fehbg`, fica o fundo sólido `#2e3436`.
 
 ## Barra
 
