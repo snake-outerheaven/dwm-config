@@ -12,7 +12,7 @@ fonte Cascadia Code e áreas de trabalho em algarismos romanos (I a IX).
 | `dwm/` | Código-fonte do dwm 6.4 com o `config.h` pronto. **Não é pacote do stow**: compila e instala |
 | `st/` | st 0.9.3 (base [st-flexipatch](https://github.com/bakkeby/st-flexipatch)) com jeito de alacritty. Compila e instala |
 | `install.sh` | Na raiz: instala pacotes, compila dwm e st e aplica o `x11` com o stow |
-| `x11/` | Pacote do stow: `.xinitrc`, `.xsession` (xenodm), `.Xresources` e `bin/dwm-status` |
+| `x11/` | Pacote do stow: `.xinitrc`, `.xsession` (xenodm), `.Xresources`, `bin/dwm-status` e `bin/printar` |
 | `patches/` | Os diffs aplicados no dwm e no st, para reaplicar numa árvore limpa |
 | `CORES.md` | Guia de todas as cores, para mexer sozinho |
 | `dwm/movestack.c`, `dwm/vanitygaps.c` | Código trazido pelos patches |
@@ -29,7 +29,7 @@ startx
 ```
 
 O `install.sh` instala os pacotes essenciais (`dmenu`, `stow`), compila o `st` do repositório e os opcionais
-(`git`, `vim`, `fastfetch`, `cascadia-code`, `feh`), compila e instala o dwm e aplica o
+(`git`, `vim`, `fastfetch`, `cascadia-code`, `feh`, `scrot`, `i3lock`, `xdg-user-dirs`), compila e instala o dwm e aplica o
 pacote `x11` com o stow. Arquivos que já existirem no `$HOME` vão para
 `~/.dotfiles-backup-DATA`; nada é apagado.
 
@@ -138,6 +138,10 @@ dwm-status -1        # imprime a linha uma vez, para testar
 | `Alt+Super+0` / `Alt+Super+Shift+0` | Liga/desliga os gaps / volta ao padrão |
 | `Alt+Super+u` / `Alt+Super+Shift+u` | Aumenta / diminui todos os gaps |
 | `Alt+1..9` / `Alt+Shift+1..9` | Ir para a área / mandar janela |
+| `Print` / `Alt+Print` | Print da tela / de uma área, em `~/Downloads` (`printar`) |
+| `Alt+Shift+x` | Bloqueia a tela (`i3lock`) |
+| Teclas de volume | `sndioctl`: sobe, desce, mudo |
+| Teclas de brilho | `xbacklight`: sobe, desce |
 | `Alt+Shift+c` | Fecha a janela |
 | `Alt+Shift+q` | Sai do dwm |
 

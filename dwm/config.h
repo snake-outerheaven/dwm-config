@@ -1,5 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 
+#include <X11/XF86keysym.h>
+
 /* appearance */
 static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
@@ -82,11 +84,29 @@ static const Layout layouts[] = {
 static const char *dmenucmd[] = { "dmenu_run", "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
 static const char *termcmd[]  = { "st", NULL };
 
+/* print, bloqueio, volume (sndio) e brilho */
+static const char *printcmd[]  = { "printar", NULL };
+static const char *printacmd[] = { "printar", "-s", NULL };
+static const char *lockcmd[]   = { "i3lock", "-c", "2e3436", NULL };
+static const char *volup[]     = { "sndioctl", "-q", "output.level=+0.1", NULL };
+static const char *voldown[]   = { "sndioctl", "-q", "output.level=-0.1", NULL };
+static const char *volmute[]   = { "sndioctl", "-q", "output.mute=!", NULL };
+static const char *luzup[]     = { "xbacklight", "-inc", "10", NULL };
+static const char *luzdown[]   = { "xbacklight", "-dec", "10", NULL };
+
 #include "movestack.c"
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
+	{ 0,                            XK_Print,  spawn,          {.v = printcmd } },
+	{ MODKEY,                       XK_Print,  spawn,          {.v = printacmd } },
+	{ MODKEY|ShiftMask,             XK_x,      spawn,          {.v = lockcmd } },
+	{ 0,              XF86XK_AudioRaiseVolume, spawn,          {.v = volup } },
+	{ 0,              XF86XK_AudioLowerVolume, spawn,          {.v = voldown } },
+	{ 0,              XF86XK_AudioMute,        spawn,          {.v = volmute } },
+	{ 0,              XF86XK_MonBrightnessUp,  spawn,          {.v = luzup } },
+	{ 0,              XF86XK_MonBrightnessDown,spawn,          {.v = luzdown } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
