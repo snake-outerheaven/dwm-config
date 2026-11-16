@@ -1,6 +1,6 @@
 # dwm-config
 
-dwm 6.4 para OpenBSD, em amarelo Tango (`#edd400` sobre `#2e3436`),
+dwm 6.4 para OpenBSD e FreeBSD, em amarelo Tango (`#edd400` sobre `#2e3436`),
 fonte Cascadia Code e áreas de trabalho em algarismos romanos (I a IX).
 
 ![dwm-config no OpenBSD](docs/dwm.png)
@@ -13,7 +13,8 @@ fonte Cascadia Code e áreas de trabalho em algarismos romanos (I a IX).
 | `st/` | st 0.9.3 (base [st-flexipatch](https://github.com/bakkeby/st-flexipatch)) com jeito de alacritty. Compila e instala |
 | `install.sh` | Na raiz: instala pacotes, compila dwm e st e aplica o `x11` com o stow |
 | `x11/` | Pacote do stow: `.xinitrc`, `.xsession`, `.Xresources`, `.config/dunst/dunstrc` e os scripts `bin/dwm-status`, `bin/printar`, `bin/midia` |
-| `sistema/etc/apm/suspend` | Bloqueia a tela antes de suspender. Fica fora do stow: instalar como root (ver abaixo) |
+| `sistema/openbsd/`, `sistema/freebsd/` | Arquivos de sistema por SO (bloquear antes de suspender, rc.conf, doas). Fora do stow: instalar como root |
+| `FREEBSD.md` | Guia do desktop no FreeBSD 15 com ZFS |
 | `patches/` | Os diffs aplicados no dwm e no st, para reaplicar numa árvore limpa |
 | `CORES.md` | Guia de todas as cores, para mexer sozinho |
 | `dwm/movestack.c`, `dwm/vanitygaps.c` | Código trazido pelos patches |
@@ -161,10 +162,10 @@ O que sobe com o `startx` (`x11/.xinitrc`):
 | `copyq` | Histórico do clipboard (`Alt+v`) |
 | `xidle` (base) | Chama o `i3lock` após 5 min parado |
 
-Bloquear antes de suspender (tampa ou `zzz`), como root:
+Bloquear antes de suspender (tampa ou `zzz`), como root, no OpenBSD (no FreeBSD, veja o `FREEBSD.md`):
 
 ```sh
-install -o root -g wheel -m 755 ~/dwm-config/sistema/etc/apm/suspend /etc/apm/suspend
+install -o root -g wheel -m 755 ~/dwm-config/sistema/openbsd/etc/apm/suspend /etc/apm/suspend
 ln -sf suspend /etc/apm/hibernate
 rcctl enable apmd && rcctl start apmd
 ```

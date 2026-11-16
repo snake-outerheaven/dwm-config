@@ -1,0 +1,3 @@
+# Trecho para o /etc/sysctl.conf do desktop
+# fechar a tampa suspende (S3); o /etc/rc.suspend bloqueia a tela antes
+hw.acpi.lid_switch_state=S3

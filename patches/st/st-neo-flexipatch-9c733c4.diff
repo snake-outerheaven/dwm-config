@@ -1,6 +1,6 @@
-diff -ruN sa/config.def.h sb/config.def.h
+diff -ruN sa/config.def.h sb2/config.def.h
 --- sa/config.def.h	2026-10-30 04:11:42.000000000 -0300
-+++ sb/config.def.h	2026-11-16 11:42:16.462767500 -0300
++++ sb2/config.def.h	2026-11-16 11:42:16.462767500 -0300
 @@ -5,7 +5,7 @@
   *
   * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
@@ -99,21 +99,46 @@ diff -ruN sa/config.def.h sb/config.def.h
  	#endif // KEYBOARDSELECT_PATCH
  	#if KEYBOARDSELECT_PATCH && REFLOW_PATCH
  	{ TERMMOD,              XK_F,           searchforward,   { 0 } },
-diff -ruN sa/config.mk sb/config.mk
+diff -ruN sa/config.mk sb2/config.mk
 --- sa/config.mk	2026-10-30 04:11:42.000000000 -0300
-+++ sb/config.mk	2026-11-16 11:02:37.249118602 -0300
-@@ -51,7 +51,7 @@
++++ sb2/config.mk	2026-11-16 15:05:27.533272076 -0300
+@@ -9,8 +9,16 @@
+ ICONPREFIX = $(PREFIX)/share/pixmaps
+ ICONNAME = st.png
  
- # OpenBSD:
- #CPPFLAGS = $(STCPPFLAGS) -D_XOPEN_SOURCE=600
+-X11INC = /usr/X11R6/include
+-X11LIB = /usr/X11R6/lib
++# Sistema detectado sozinho (OpenBSD, FreeBSD ou Linux); troque na linha de comando se precisar
++OS != uname -s
++X11INC_OpenBSD = /usr/X11R6/include
++X11LIB_OpenBSD = /usr/X11R6/lib
++X11INC_FreeBSD = /usr/local/include
++X11LIB_FreeBSD = /usr/local/lib
++X11INC_Linux   = /usr/include
++X11LIB_Linux   = /usr/lib
++X11INC = $(X11INC_$(OS))
++X11LIB = $(X11LIB_$(OS))
+ 
+ PKG_CONFIG = pkg-config
+ 
+@@ -49,9 +57,11 @@
+ STCFLAGS = $(INCS) $(STCPPFLAGS) $(CPPFLAGS) $(CFLAGS)
+ STLDFLAGS = $(LIBS) $(LDFLAGS)
+ 
+-# OpenBSD:
+-#CPPFLAGS = $(STCPPFLAGS) -D_XOPEN_SOURCE=600
 -#MANPREFIX = ${PREFIX}/man
-+MANPREFIX = ${PREFIX}/man
++# OpenBSD instala as manpages em $(PREFIX)/man; FreeBSD e Linux em share/man
++MANPREFIX_OpenBSD = $(PREFIX)/man
++MANPREFIX_FreeBSD = $(PREFIX)/share/man
++MANPREFIX_Linux   = $(PREFIX)/share/man
++MANPREFIX = $(MANPREFIX_$(OS))
  
  # compiler and linker
  # CC = c99
-diff -ruN sa/patches.h sb/patches.h
+diff -ruN sa/patches.h sb2/patches.h
 --- sa/patches.h	2026-11-16 11:06:18.518884596 -0300
-+++ sb/patches.h	2026-11-16 11:02:30.948422142 -0300
++++ sb2/patches.h	2026-11-16 11:02:30.948422142 -0300
 @@ -39,7 +39,7 @@
  /* This patch allows st to resize to any pixel size rather than snapping to character width/height.
   * https://st.suckless.org/patches/anysize/
@@ -189,9 +214,9 @@ diff -ruN sa/patches.h sb/patches.h
  
  /* This patch adds the ability to reload the Xresources config when a SIGUSR1 signal is received
   * e.g.: killall -USR1 st
-diff -ruN sa/st.h sb/st.h
+diff -ruN sa/st.h sb2/st.h
 --- sa/st.h	2026-10-30 04:11:42.000000000 -0300
-+++ sb/st.h	2026-11-16 11:02:30.992963938 -0300
++++ sb2/st.h	2026-11-16 11:02:30.992963938 -0300
 @@ -34,7 +34,7 @@
  #define TRUECOLOR(r,g,b)	(1 << 24 | (r) << 16 | (g) << 8 | (b))
  #define IS_TRUECOL(x)		(1 << 24 & (x))

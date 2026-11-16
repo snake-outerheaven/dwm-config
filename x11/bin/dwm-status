@@ -1,14 +1,22 @@
 #!/bin/sh
-# dwm-status - barra do dwm no OpenBSD: cpu, memoria, volume, bateria e data
+# dwm-status - barra do dwm no OpenBSD e no FreeBSD: cpu, memoria, volume, bateria e data
 # Tambem avisa (notify-send/dunst) quando a bateria fica baixa: 15% e 5%.
 #
 # Uso:  dwm-status &     o .xinitrc ja chama assim
 #       dwm-status -1    imprime a linha uma vez no terminal, para testar
 
 INTERVALO=5
+SO=$(uname -s)
 
 # --- bateria -----------------------------------------------------------------
 pct_bateria() {
+	case "$SO" in
+	FreeBSD)
+		pct=$(sysctl -n hw.acpi.battery.life 2>/dev/null)
+		case "$pct" in ''|*[!0-9]*) pct= ;; esac
+		printf '%s' "$pct"
+		return ;;
+	esac
 	pct=$(apm -l 2>/dev/null)
 	case "$pct" in ''|*[!0-9]*) pct= ;; esac
 	# apm sem resposta ou "desconhecido" (255): calcula pelos sensores ACPI
@@ -23,11 +31,15 @@ pct_bateria() {
 }
 
 na_tomada() {
-	[ "$(apm -a 2>/dev/null)" = 1 ]
+	case "$SO" in
+	FreeBSD) [ "$(sysctl -n hw.acpi.acline 2>/dev/null)" = 1 ] ;;
+	*)       [ "$(apm -a 2>/dev/null)" = 1 ] ;;
+	esac
 }
 
 # --- cpu: uso entre duas leituras do kern.cp_time ----------------------------
-# kern.cp_time = user,nice,sys,spin,intr,idle (contadores acumulados)
+# OpenBSD: user,nice,sys,spin,intr,idle   FreeBSD: user nice sys intr idle
+# Nos dois o idle e o ultimo campo; a conta abaixo serve para os dois.
 cp_time() {
 	sysctl -n kern.cp_time 2>/dev/null | tr ',' ' '
 }
@@ -44,13 +56,24 @@ cpu_pct() {	# $1 = leitura anterior, $2 = leitura atual
 
 # --- memoria: ativa / total, em MB -------------------------------------------
 memoria() {
+	total=$(sysctl -n hw.physmem 2>/dev/null)
+	case "$SO" in
+	FreeBSD)
+		pag=$(sysctl -n vm.stats.vm.v_active_count 2>/dev/null)
+		tam=$(sysctl -n hw.pagesize 2>/dev/null)
+		if [ -n "$pag" ] && [ -n "$tam" ] && [ -n "$total" ]; then
+			printf 'mem %sM/%sM' "$((pag * tam / 1048576))" "$((total / 1048576))"
+		else
+			printf 'mem ?'
+		fi
+		return ;;
+	esac
 	top -b -d1 2>/dev/null | awk '/^Memory:/ {
 		split($3, r, "/"); v = r[1] + 0; u = substr(r[1], length(r[1]))
 		if (u == "K") v = v / 1024; else if (u == "G") v = v * 1024
 		printf "%d", v
 	}' | {
 		read -r ativa
-		total=$(sysctl -n hw.physmem 2>/dev/null)
 		if [ -n "$ativa" ] && [ -n "$total" ]; then
 			printf 'mem %sM/%sM' "$ativa" "$((total / 1048576))"
 		else
@@ -60,12 +83,27 @@ memoria() {
 }
 
 # --- volume -------------------------------------------------------------------
+# nivel e mudo em 0-1 e 0/1, nos dois sistemas
+nivel_volume() {
+	case "$SO" in
+	FreeBSD) mixer -o vol.volume 2>/dev/null | sed 's/.*=//; s/:.*//' ;;
+	*)       sndioctl -n output.level 2>/dev/null ;;
+	esac
+}
+
+mudo() {
+	case "$SO" in
+	FreeBSD) [ "$(mixer -o vol.mute 2>/dev/null | sed 's/.*=//')" = on ] ;;
+	*)       [ "$(sndioctl -n output.mute 2>/dev/null)" = 1 ] ;;
+	esac
+}
+
 volume() {
-	if [ "$(sndioctl -n output.mute 2>/dev/null)" = 1 ]; then
+	if mudo; then
 		printf 'vol mudo'
 		return
 	fi
-	nivel=$(sndioctl -n output.level 2>/dev/null)
+	nivel=$(nivel_volume)
 	if [ -n "$nivel" ]; then
 		printf 'vol %s%%' "$(echo "$nivel" | awk '{ printf "%d", $1 * 100 + 0.5 }')"
 	else

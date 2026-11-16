@@ -1,0 +1,20 @@
+# Trecho para o /etc/rc.conf do desktop (FreeBSD 15.x, ThinkPad T420)
+# Aplicar linha por linha com sysrc, por exemplo:  doas sysrc dbus_enable=YES
+# O instalador ja coloca hostname, zfs_enable, sshd, ntpd e a rede.
+
+# video Intel (Sandy Bridge, HD 3000), ThinkPad e brilho
+kld_list="i915kms acpi_ibm acpi_video"
+
+# D-Bus do sistema (dunst, copyq e firefox usam)
+dbus_enable="YES"
+
+# economia de energia da CPU
+powerd_enable="YES"
+powerd_flags="-a hiadaptive -b adaptive"
+
+# Wi-Fi Intel 6205 (iwn); troque iwn0 pelo que aparecer em: sysctl net.wlan.devices
+wlans_iwn0="wlan0"
+ifconfig_wlan0="WPA DHCP"
+
+# limpa o /tmp no boot
+clear_tmp_enable="YES"
