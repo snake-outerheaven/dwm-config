@@ -13,6 +13,7 @@ fonte Cascadia Code e áreas de trabalho em algarismos romanos (I a IX).
 | `st/` | st 0.9.3 (base [st-flexipatch](https://github.com/bakkeby/st-flexipatch)) com jeito de alacritty. Compila e instala |
 | `dwm/install.sh` | Instala pacotes, compila o dwm e aplica o `x11` com o stow |
 | `x11/` | Pacote do stow: `.xinitrc`, `.xsession` (xenodm), `.Xresources` e `bin/dwm-status` |
+| `patches/` | Os diffs aplicados no dwm e no st, para reaplicar numa árvore limpa |
 | `CORES.md` | Guia de todas as cores, para mexer sozinho |
 | `dwm/movestack.c`, `dwm/vanitygaps.c` | Código trazido pelos patches |
 | `LICENSE` | MIT/X, a mesma licença do dwm |

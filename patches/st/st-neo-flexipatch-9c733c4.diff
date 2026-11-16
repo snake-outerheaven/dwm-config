@@ -1,0 +1,203 @@
+diff -ruN sa/config.def.h sb/config.def.h
+--- sa/config.def.h	2026-10-30 04:11:42.000000000 -0300
++++ sb/config.def.h	2026-11-16 11:02:37.247429278 -0300
+@@ -5,7 +5,7 @@
+  *
+  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
+  */
+-static char *font = "Liberation Mono:pixelsize=12:antialias=true:autohint=true";
++static char *font = "Cascadia Code:size=11:antialias=true:autohint=true";
+ #if FONT2_PATCH
+ /* Spare fonts */
+ static char *font2[] = {
+@@ -29,7 +29,7 @@
+  *             0 = no border, 100 = border width is same as cell width */
+ int borderperc = 20;
+ #else
+-static int borderpx = 2;
++static int borderpx = 8;
+ #endif // RELATIVEBORDER_PATCH
+ 
+ #if OPENURLONCLICK_PATCH
+@@ -130,7 +130,7 @@
+  *    Bold affects lines thickness if boxdraw_bold is not 0. Italic is ignored.
+  * 0: disable (render all U25XX glyphs normally from the font).
+  */
+-const int boxdraw = 0;
++const int boxdraw = 1;
+ const int boxdraw_bold = 0;
+ 
+ /* braille (U28XX):  1: render as adjacent "pixels",  0: use font */
+@@ -187,32 +187,32 @@
+ /* Terminal colors (16 first used in escape sequence) */
+ static const char *colorname[] = {
+ 	/* 8 normal colors */
+-	"black",
+-	"red3",
+-	"green3",
+-	"yellow3",
+-	"blue2",
+-	"magenta3",
+-	"cyan3",
+-	"gray90",
++	"#282828",
++	"#cc241d",
++	"#98971a",
++	"#d79921",
++	"#458588",
++	"#b16286",
++	"#689d6a",
++	"#a89984",
+ 
+ 	/* 8 bright colors */
+-	"gray50",
+-	"red",
+-	"green",
+-	"yellow",
+-	"#5c5cff",
+-	"magenta",
+-	"cyan",
+-	"white",
++	"#928374",
++	"#fb4934",
++	"#b8bb26",
++	"#fabd2f",
++	"#83a598",
++	"#d3869b",
++	"#8ec07c",
++	"#ebdbb2",
+ 
+ 	[255] = 0,
+ 
+ 	/* more colors can be added after 255 to use with DefaultXX */
+-	"#add8e6", /* 256 -> cursor */
+-	"#555555", /* 257 -> rev cursor*/
+-	"#000000", /* 258 -> bg */
+-	"#e5e5e5", /* 259 -> fg */
++	"#ebdbb2", /* 256 -> cursor */
++	"#282828", /* 257 -> rev cursor*/
++	"#282828", /* 258 -> bg */
++	"#ebdbb2", /* 259 -> fg */
+ };
+ 
+ 
+@@ -425,6 +425,9 @@
+ 	{ TERMMOD,              XK_Prior,       zoom,            {.f = +1} },
+ 	{ TERMMOD,              XK_Next,        zoom,            {.f = -1} },
+ 	{ TERMMOD,              XK_Home,        zoomreset,       {.f =  0} },
++	{ ControlMask,          XK_equal,       zoom,            {.f = +1} }, /* como no alacritty */
++	{ ControlMask,          XK_minus,       zoom,            {.f = -1} },
++	{ ControlMask,          XK_0,           zoomreset,       {.f =  0} },
+ 	{ TERMMOD,              XK_C,           clipcopy,        {.i =  0} },
+ 	{ TERMMOD,              XK_V,           clippaste,       {.i =  0} },
+ 	#if ALPHA_PATCH
+@@ -468,6 +471,7 @@
+ 	#endif // EXTERNALPIPE_PATCH
+ 	#if KEYBOARDSELECT_PATCH
+ 	{ TERMMOD,              XK_Escape,      keyboard_select, { 0 } },
++	{ TERMMOD,              XK_space,       keyboard_select, { 0 } }, /* modo vi do alacritty */
+ 	#endif // KEYBOARDSELECT_PATCH
+ 	#if KEYBOARDSELECT_PATCH && REFLOW_PATCH
+ 	{ TERMMOD,              XK_F,           searchforward,   { 0 } },
+diff -ruN sa/config.mk sb/config.mk
+--- sa/config.mk	2026-10-30 04:11:42.000000000 -0300
++++ sb/config.mk	2026-11-16 11:02:37.249118602 -0300
+@@ -51,7 +51,7 @@
+ 
+ # OpenBSD:
+ #CPPFLAGS = $(STCPPFLAGS) -D_XOPEN_SOURCE=600
+-#MANPREFIX = ${PREFIX}/man
++MANPREFIX = ${PREFIX}/man
+ 
+ # compiler and linker
+ # CC = c99
+diff -ruN sa/patches.h sb/patches.h
+--- sa/patches.h	2026-11-16 11:06:18.518884596 -0300
++++ sb/patches.h	2026-11-16 11:06:18.517542624 -0300
+@@ -39,7 +39,7 @@
+ /* This patch allows st to resize to any pixel size rather than snapping to character width/height.
+  * https://st.suckless.org/patches/anysize/
+  */
+-#define ANYSIZE_PATCH 0
++#define ANYSIZE_PATCH 1
+ 
+ /* A simple variant of the anysize patch that only changes the resize hints to allow the window to
+  * be resized to any size.
+@@ -75,13 +75,13 @@
+ /* This patch adds custom rendering of lines/blocks/braille characters for gapless alignment.
+  * https://st.suckless.org/patches/boxdraw/
+  */
+-#define BOXDRAW_PATCH 0
++#define BOXDRAW_PATCH 1
+ 
+ /* By default st only sets PRIMARY on selection.
+  * This patch makes st set CLIPBOARD on selection.
+  * https://st.suckless.org/patches/clipboard/
+  */
+-#define CLIPBOARD_PATCH 0
++#define CLIPBOARD_PATCH 1
+ 
+ /* This patch allows st to be resized without cutting off text when the terminal window is
+  * made larger again. Text does not wrap when the terminal window is made smaller, you may
+@@ -239,7 +239,7 @@
+  *
+  * https://st.suckless.org/patches/keyboard_select/
+  */
+-#define KEYBOARDSELECT_PATCH 0
++#define KEYBOARDSELECT_PATCH 1
+ 
+ /* This patch adds support for drawing ligatures using the Harfbuzz library to transform
+  * original text of a single line to a list of glyphs with ligatures included.
+@@ -342,7 +342,7 @@
+  * Text wraps when the terminal window is made smaller.
+  * Comes with scrollback.
+  */
+-#define REFLOW_PATCH 0
++#define REFLOW_PATCH 1
+ 
+ /* This patch allows you to specify a border that is relative in size to the width of a cell
+  * in the terminal.
+@@ -359,19 +359,19 @@
+ /* Scroll back through terminal output using Shift+{PageUp, PageDown}.
+  * https://st.suckless.org/patches/scrollback/
+  */
+-#define SCROLLBACK_PATCH 0
++#define SCROLLBACK_PATCH 1
+ 
+ /* Scroll back through terminal output using Shift+MouseWheel.
+  * This variant depends on SCROLLBACK_PATCH being enabled.
+  * https://st.suckless.org/patches/scrollback/
+  */
+-#define SCROLLBACK_MOUSE_PATCH 0
++#define SCROLLBACK_MOUSE_PATCH 1
+ 
+ /* Scroll back through terminal output using mouse wheel (when not in MODE_ALTSCREEN).
+  * This variant depends on SCROLLBACK_PATCH being enabled.
+  * https://st.suckless.org/patches/scrollback/
+  */
+-#define SCROLLBACK_MOUSE_ALTSCREEN_PATCH 0
++#define SCROLLBACK_MOUSE_ALTSCREEN_PATCH 1
+ 
+ /* This patch adds the two color-settings selectionfg and selectionbg to config.def.h.
+  * Those define the fore- and background colors which are used when text on the screen is selected
+@@ -528,7 +528,7 @@
+  * apply the resources named in the resources[] array in config.h.
+  * https://st.suckless.org/patches/xresources/
+  */
+-#define XRESOURCES_PATCH 0
++#define XRESOURCES_PATCH 1
+ 
+ /* This patch adds the ability to reload the Xresources config when a SIGUSR1 signal is received
+  * e.g.: killall -USR1 st
+diff -ruN sa/st.h sb/st.h
+--- sa/st.h	2026-10-30 04:11:42.000000000 -0300
++++ sb/st.h	2026-11-16 11:02:30.992963938 -0300
+@@ -34,7 +34,7 @@
+ #define TRUECOLOR(r,g,b)	(1 << 24 | (r) << 16 | (g) << 8 | (b))
+ #define IS_TRUECOL(x)		(1 << 24 & (x))
+ #if SCROLLBACK_PATCH || REFLOW_PATCH
+-#define HISTSIZE      2000
++#define HISTSIZE      10000
+ #endif // SCROLLBACK_PATCH | REFLOW_PATCH
+ 
+ #if DRAG_AND_DROP_PATCH
