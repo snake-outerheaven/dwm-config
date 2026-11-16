@@ -1,5 +1,5 @@
 #!/bin/sh
-# install.sh - instala as ferramentas do ambiente dwm Gruvbox no OpenBSD
+# install.sh - instala as ferramentas do ambiente dwm amarelo Tango no OpenBSD
 #
 # Uso (na raiz do repositorio):
 #   sh install.sh            instala pacotes, compila dwm e st e aplica os dotfiles

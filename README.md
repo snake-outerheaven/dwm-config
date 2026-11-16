@@ -97,7 +97,7 @@ O dmenu fica como vem. O st foi ajustado para lembrar o alacritty:
 | Modo vi (selecionar com o teclado) | `Ctrl+Shift+Espaço` ou `Ctrl+Shift+Esc` |
 | Busca | `Ctrl+Shift+f` / `Ctrl+Shift+b` |
 | Linhas e caixas desenhadas pelo st | Automático (boxdraw) |
-| Cores Gruvbox | Do `config.h`; o `~/.Xresources` tem prioridade |
+| Cores Tango (cursor amarelo `#edd400`) | Do `config.h`; o `~/.Xresources` tem prioridade |
 
 Patches ligados em `st/patches.h`: reflow, scrollback (+ mouse), clipboard,
 keyboard_select, boxdraw, anysize e xresources. Para ligar ou desligar outro,

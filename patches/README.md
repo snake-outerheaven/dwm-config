@@ -27,7 +27,7 @@ Base: [st-flexipatch](https://github.com/bakkeby/st-flexipatch), commit `9c733c4
 
 | Arquivo | O que é |
 |---|---|
-| `st/st-neo-flexipatch-9c733c4.diff` | `patches.h` ligado, Gruvbox, Cascadia Code, zoom do alacritty, histórico de 10 000 linhas |
+| `st/st-neo-flexipatch-9c733c4.diff` | `patches.h` ligado, Tango, Cascadia Code, zoom do alacritty, histórico de 10 000 linhas |
 
 ```sh
 git clone https://github.com/bakkeby/st-flexipatch && cd st-flexipatch

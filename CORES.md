@@ -63,8 +63,21 @@ xsetroot -solid "#2e3436"     # aparece se não houver ~/.fehbg
 
 ## Terminal: `st` e `x11/.Xresources`
 
-O st e o `.Xresources` continuam em **Gruvbox** (`#282828` / `#ebdbb2`). O st deste repo lê o `.Xresources`
-(patch xresources), então trocar as cores lá muda o st também:
+O terminal usa a paleta Tango completa: fundo `#2e3436`, texto `#d3d7cf`, cursor `#edd400`.
+
+| Cor | Normal (0-7) | Clara (8-15) |
+|---|---|---|
+| Preto / cinza | `#2e3436` | `#555753` |
+| Vermelho | `#cc0000` | `#ef2929` |
+| Verde | `#4e9a06` | `#8ae234` |
+| Amarelo | `#c4a000` | `#fce94f` |
+| Azul | `#3465a4` | `#729fcf` |
+| Roxo | `#75507b` | `#ad7fa8` |
+| Ciano | `#06989a` | `#34e2e2` |
+| Branco | `#d3d7cf` | `#eeeeec` |
+
+As mesmas cores estão no `st/config.h` (padrão) e no `.Xresources` (prioridade, pelo patch xresources).
+Para ajustar sem recompilar o st, mude o `.Xresources`:
 
 ```sh
 xrdb -merge ~/.Xresources     # vale para os terminais abertos depois

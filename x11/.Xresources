@@ -1,30 +1,30 @@
-! ~/.Xresources - Gruvbox escuro padrao (dark, contraste medio)
+! ~/.Xresources - paleta Tango (amarelo Tango), igual ao dwm
 ! Aplicar sem reiniciar: xrdb -merge ~/.Xresources  (vale para janelas novas)
 
 ! base
-*.background:   #282828
-*.foreground:   #ebdbb2
-*.cursorColor:  #ebdbb2
+*.background:   #2e3436
+*.foreground:   #d3d7cf
+*.cursorColor:  #edd400
 
 ! cores normais (0-7)
-*.color0:  #282828
-*.color1:  #cc241d
-*.color2:  #98971a
-*.color3:  #d79921
-*.color4:  #458588
-*.color5:  #b16286
-*.color6:  #689d6a
-*.color7:  #a89984
+*.color0:  #2e3436
+*.color1:  #cc0000
+*.color2:  #4e9a06
+*.color3:  #c4a000
+*.color4:  #3465a4
+*.color5:  #75507b
+*.color6:  #06989a
+*.color7:  #d3d7cf
 
 ! cores claras (8-15)
-*.color8:  #928374
-*.color9:  #fb4934
-*.color10: #b8bb26
-*.color11: #fabd2f
-*.color12: #83a598
-*.color13: #d3869b
-*.color14: #8ec07c
-*.color15: #ebdbb2
+*.color8:  #555753
+*.color9:  #ef2929
+*.color10: #8ae234
+*.color11: #fce94f
+*.color12: #729fcf
+*.color13: #ad7fa8
+*.color14: #34e2e2
+*.color15: #eeeeec
 
 ! xterm
 XTerm*faceName:       Cascadia Code
