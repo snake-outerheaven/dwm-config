@@ -29,7 +29,7 @@ startx
 ```
 
 O `install.sh` instala os pacotes essenciais (`dmenu`, `stow`), compila o `st` do repositório e os opcionais
-(`git`, `vim`, `fastfetch`, `cascadia-code`), compila e instala o dwm e aplica o
+(`git`, `vim`, `fastfetch`, `cascadia-code`, `feh`), compila e instala o dwm e aplica o
 pacote `x11` com o stow. Arquivos que já existirem no `$HOME` vão para
 `~/.dotfiles-backup-DATA`; nada é apagado.
 
@@ -102,6 +102,16 @@ O dmenu fica como vem. O st foi ajustado para lembrar o alacritty:
 Patches ligados em `st/patches.h`: reflow, scrollback (+ mouse), clipboard,
 keyboard_select, boxdraw, anysize e xresources. Para ligar ou desligar outro,
 mude o `0`/`1` lá e recompile (`cd st && make && doas make install`).
+
+## Wallpaper
+
+O `.xinitrc` roda o `~/.fehbg` a cada sessão. Para escolher a imagem:
+
+```sh
+feh --bg-fill ~/flores.jpg    # mostra agora e grava o ~/.fehbg
+```
+
+Sem `~/.fehbg`, fica o fundo sólido `#282828`.
 
 ## Barra
 

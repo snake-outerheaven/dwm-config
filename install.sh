@@ -20,7 +20,7 @@ BACKUP="$HOME/.dotfiles-backup-$(date +%Y%m%d-%H%M%S)"
 ESSENCIAIS="dmenu stow"
 # o st vem compilado da pasta st/ do repositorio (scrollback, reflow, modo vi)
 # pacotes opcionais (o ambiente sobe sem eles; falha vira aviso)
-OPCIONAIS="git vim--no_x11 fastfetch cascadia-code"
+OPCIONAIS="git vim--no_x11 fastfetch cascadia-code feh"
 # pacotes stow aplicados no $HOME
 STOW_PACOTES="x11"
 
