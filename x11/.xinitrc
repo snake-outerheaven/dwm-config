@@ -10,7 +10,15 @@ xrdb -merge ~/.Xresources
 xsetroot -solid "#2e3436"
 [ -f ~/.fehbg ] && sh ~/.fehbg
 
-# barra: volume, bateria e data (script em ~/bin/dwm-status)
+# barra: cpu, memoria, volume, bateria e data (script em ~/bin/dwm-status)
 ~/bin/dwm-status &
+
+# notificacoes (dunst) e historico do clipboard (copyq, Alt+v)
+command -v dunst >/dev/null && dunst &
+command -v copyq >/dev/null && copyq &
+
+# bloqueio apos 5 min parado: o xidle (base) chama o i3lock; -no = sem canto de bloqueio
+[ -x /usr/local/bin/i3lock ] &&
+    xidle -no -timeout 300 -program "/usr/local/bin/i3lock -c 2e3436" &
 
 exec dwm

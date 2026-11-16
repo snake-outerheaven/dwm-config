@@ -1,0 +1,51 @@
+# ~/.config/dunst/dunstrc - notificacoes em amarelo Tango, como o dwm
+# Testar: notify-send "Titulo" "Texto"     Recarregar: pkill dunst (o proximo aviso sobe ele de novo)
+
+[global]
+    monitor = 0
+    follow = keyboard
+    origin = top-right
+    offset = (12, 32)          # abaixo da barra do dwm
+    width = 320
+    height = (0, 140)
+    notification_limit = 5
+    font = Cascadia Code 11
+    frame_width = 2
+    separator_height = 2
+    separator_color = frame
+    padding = 10
+    horizontal_padding = 12
+    corner_radius = 0
+    format = "<b>%s</b>\n%b"
+    alignment = left
+    word_wrap = yes
+    ellipsize = middle
+    show_age_threshold = 60
+    progress_bar = true
+    progress_bar_height = 8
+    progress_bar_frame_width = 0
+    progress_bar_min_width = 150
+    progress_bar_max_width = 300
+    highlight = "#edd400"
+    mouse_left_click = close_current
+    mouse_middle_click = do_action, close_current
+    mouse_right_click = close_all
+
+[urgency_low]
+    background = "#2e3436"
+    foreground = "#babdb6"
+    frame_color = "#555753"
+    timeout = 4
+
+[urgency_normal]
+    background = "#2e3436"
+    foreground = "#d3d7cf"
+    frame_color = "#edd400"
+    timeout = 6
+
+[urgency_critical]
+    background = "#2e3436"
+    foreground = "#eeeeec"
+    frame_color = "#ef2929"
+    highlight = "#ef2929"
+    timeout = 0                # fica ate voce fechar

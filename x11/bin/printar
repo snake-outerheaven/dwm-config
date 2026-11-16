@@ -1,11 +1,18 @@
 #!/bin/sh
 # printar - print da tela direto em Downloads (Print = tela toda, Alt+Print = area)
+# Avisa no dunst o nome do arquivo salvo.
 # A pasta Downloads vem do xdg-user-dirs (~/.config/user-dirs.dirs).
 DESTINO=$(xdg-user-dir DOWNLOAD 2>/dev/null) || DESTINO="$HOME/Downloads"
 [ "$DESTINO" = "$HOME" ] && DESTINO="$HOME/Downloads"
 mkdir -p "$DESTINO"
+ARQUIVO="$DESTINO/print-$(date +%Y%m%d-%H%M%S).png"
+
 if [ "${1:-}" = "-s" ]; then
-	scrot -s "$DESTINO/print-%Y%m%d-%H%M%S.png"
+	scrot -s "$ARQUIVO" || exit 1	# Esc ou clique fora cancela a area
 else
-	scrot "$DESTINO/print-%Y%m%d-%H%M%S.png"
+	scrot "$ARQUIVO" || exit 1
 fi
+
+command -v notify-send >/dev/null &&
+    notify-send -t 3000 "Print salvo" "$(basename "$ARQUIVO") em $(basename "$DESTINO")"
+exit 0

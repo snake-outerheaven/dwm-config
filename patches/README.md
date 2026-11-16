@@ -13,7 +13,7 @@ Os diffs que transformam o código de origem nas árvores `dwm/` e `st/` deste r
 | `dwm/dwm-swallow-6.3.diff` | swallow original (3 hunks ajustados à mão) |
 | `dwm/dwm-togglefullscreen-6.3.diff` | togglefullscreen original |
 
-hide_vacant_tags e movestack foram escritos à mão; estão só no diff combinado.
+hide_vacant_tags, movestack e scratchpad foram escritos à mão; estão só no diff combinado.
 
 ```sh
 # reaplicar num dwm 6.4 limpo

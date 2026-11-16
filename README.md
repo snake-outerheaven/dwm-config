@@ -12,7 +12,8 @@ fonte Cascadia Code e áreas de trabalho em algarismos romanos (I a IX).
 | `dwm/` | Código-fonte do dwm 6.4 com o `config.h` pronto. **Não é pacote do stow**: compila e instala |
 | `st/` | st 0.9.3 (base [st-flexipatch](https://github.com/bakkeby/st-flexipatch)) com jeito de alacritty. Compila e instala |
 | `install.sh` | Na raiz: instala pacotes, compila dwm e st e aplica o `x11` com o stow |
-| `x11/` | Pacote do stow: `.xinitrc`, `.xsession` (xenodm), `.Xresources`, `bin/dwm-status` e `bin/printar` |
+| `x11/` | Pacote do stow: `.xinitrc`, `.xsession`, `.Xresources`, `.config/dunst/dunstrc` e os scripts `bin/dwm-status`, `bin/printar`, `bin/midia` |
+| `sistema/etc/apm/suspend` | Bloqueia a tela antes de suspender. Fica fora do stow: instalar como root (ver abaixo) |
 | `patches/` | Os diffs aplicados no dwm e no st, para reaplicar numa árvore limpa |
 | `CORES.md` | Guia de todas as cores, para mexer sozinho |
 | `dwm/movestack.c`, `dwm/vanitygaps.c` | Código trazido pelos patches |
@@ -29,7 +30,7 @@ startx
 ```
 
 O `install.sh` instala os pacotes essenciais (`dmenu`, `stow`), compila o `st` do repositório e os opcionais
-(`git`, `vim`, `fastfetch`, `cascadia-code`, `feh`, `scrot`, `i3lock`, `xdg-user-dirs`), compila e instala o dwm e aplica o
+(`git`, `vim`, `fastfetch`, `cascadia-code`, `feh`, `scrot`, `i3lock`, `xdg-user-dirs`, `dunst`, `libnotify`, `copyq`, `ranger`, `firefox`), compila e instala o dwm e aplica o
 pacote `x11` com o stow. Arquivos que já existirem no `$HOME` vão para
 `~/.dotfiles-backup-DATA`; nada é apagado.
 
@@ -74,6 +75,7 @@ make X11INC=/usr/include X11LIB=/usr/lib FREETYPEINC=/usr/include/freetype2 KVML
 | togglefullscreen | 6.3 | Tela cheia em qualquer janela |
 | hide_vacant_tags | à mão | A barra só mostra áreas ocupadas ou a atual |
 | movestack | à mão | Move a janela para cima ou para baixo na pilha |
+| scratchpad | à mão | Um st flutuante que aparece e some com ``Alt+` `` |
 
 Diffs de referência: coleção [bakkeby/patches](https://github.com/bakkeby/patches)
 (o site suckless.org tem as versões oficiais de cada um).
@@ -115,8 +117,8 @@ Sem `~/.fehbg`, fica o fundo sólido `#2e3436`.
 
 ## Barra
 
-O `~/bin/dwm-status` escreve na barra a cada 5 s: volume (`sndioctl`), bateria
-(`apm`, ou os sensores ACPI quando o `apm` não responde) e data.
+O `~/bin/dwm-status` escreve na barra a cada 5 s: cpu (`kern.cp_time`), memória ativa
+(`top`), volume (`sndioctl`), bateria (`apm`, ou os sensores ACPI) e data.
 O `~/bin` é o lugar padrão do OpenBSD para scripts do usuário.
 
 ```sh
@@ -128,7 +130,11 @@ dwm-status -1        # imprime a linha uma vez, para testar
 | Atalho | Ação |
 |---|---|
 | `Alt+Shift+Enter` | Terminal (`st`) |
+| ``Alt+` `` | Scratchpad: st flutuante que aparece e some |
 | `Alt+p` | dmenu |
+| `Alt+w` | Firefox |
+| `Alt+e` | ranger (arquivos) no st |
+| `Alt+v` | Histórico do clipboard (copyq) |
 | `Alt+j` / `Alt+k` | Próxima / anterior janela |
 | `Alt+Shift+j` / `Alt+Shift+k` | Move a janela na pilha (movestack) |
 | `Alt+h` / `Alt+l` | Diminui / aumenta a área principal |
@@ -140,10 +146,30 @@ dwm-status -1        # imprime a linha uma vez, para testar
 | `Alt+1..9` / `Alt+Shift+1..9` | Ir para a área / mandar janela |
 | `Print` / `Alt+Print` | Print da tela / de uma área, em `~/Downloads` (`printar`) |
 | `Alt+Shift+x` | Bloqueia a tela (`i3lock`) |
-| Teclas de volume | `sndioctl`: sobe, desce, mudo |
-| Teclas de brilho | `xbacklight`: sobe, desce |
+| Teclas de volume / brilho | `~/bin/midia`: muda e mostra o valor novo no dunst |
 | `Alt+Shift+c` | Fecha a janela |
 | `Alt+Shift+q` | Sai do dwm |
+
+## Desktop
+
+O que sobe com o `startx` (`x11/.xinitrc`):
+
+| Peça | Para quê |
+|---|---|
+| `dwm-status` | Barra: cpu, memória, volume, bateria e data; avisa a bateria em 15% e 5% |
+| `dunst` | Notificações em amarelo Tango (print salvo, volume, brilho, bateria, programas) |
+| `copyq` | Histórico do clipboard (`Alt+v`) |
+| `xidle` (base) | Chama o `i3lock` após 5 min parado |
+
+Bloquear antes de suspender (tampa ou `zzz`), como root:
+
+```sh
+install -o root -g wheel -m 755 ~/dwm-config/sistema/etc/apm/suspend /etc/apm/suspend
+ln -sf suspend /etc/apm/hibernate
+rcctl enable apmd && rcctl start apmd
+```
+
+Regras de janela: nenhuma por programa. Só o `st` é marcado como terminal (o swallow precisa).
 
 ## Mudar algo
 

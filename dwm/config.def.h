@@ -33,8 +33,6 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class      instance    title            tags mask  isfloating  isterminal  noswallow  monitor */
-	{ "Gimp",     NULL,       NULL,            0,         1,          0,           0,        -1 },
-	{ "Firefox",  NULL,       NULL,            1 << 8,    0,          0,          -1,        -1 },
 	{ "St",       NULL,       NULL,            0,         0,          1,           0,        -1 },
 	{ NULL,       NULL,       "Event Tester",  0,         0,          0,           1,        -1 }, /* xev */
 };
@@ -81,12 +79,24 @@ static const Layout layouts[] = {
 /* commands */
 static const char *dmenucmd[] = { "dmenu_run", "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
 static const char *termcmd[]  = { "st", NULL };
+/* scratchpad: st flutuante que aparece e some com Alt+` */
+static const char scratchpadname[] = "scratchpad";
+static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "110x30", NULL };
+
+/* programas */
+static const char *browsercmd[] = { "firefox", NULL };
+static const char *filescmd[]   = { "st", "-e", "ranger", NULL };
+static const char *clipcmd[]    = { "copyq", "toggle", NULL };
 
 #include "movestack.c"
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
+	{ MODKEY,                       XK_grave,  togglescratch,  {.v = scratchpadcmd } },
+	{ MODKEY,                       XK_w,      spawn,          {.v = browsercmd } },
+	{ MODKEY,                       XK_e,      spawn,          {.v = filescmd } },
+	{ MODKEY,                       XK_v,      spawn,          {.v = clipcmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },

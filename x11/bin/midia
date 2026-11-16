@@ -1,0 +1,38 @@
+#!/bin/sh
+# midia - volume (sndioctl) e brilho (xbacklight), com o valor novo no dunst
+#
+# Uso: midia vol+ | vol- | mudo | luz+ | luz-
+# O dwm chama pelas teclas de volume e brilho.
+
+avisar() {	# $1 = titulo, $2 = valor 0-100 (vazio = sem barra)
+	command -v notify-send >/dev/null || return 0
+	if [ -n "$2" ]; then
+		notify-send -t 1500 -h string:x-dunst-stack-tag:midia \
+		    -h "int:value:$2" "$1" "$2%"
+	else
+		notify-send -t 1500 -h string:x-dunst-stack-tag:midia "$1"
+	fi
+}
+
+pct() {	# 0.700 -> 70
+	awk -v n="$1" 'BEGIN { printf "%d", n * 100 + 0.5 }'
+}
+
+case "${1:-}" in
+vol+)	sndioctl -q output.mute=0 output.level=+0.1
+	avisar "Volume" "$(pct "$(sndioctl -n output.level)")" ;;
+vol-)	sndioctl -q output.level=-0.1
+	avisar "Volume" "$(pct "$(sndioctl -n output.level)")" ;;
+mudo)	sndioctl -q output.mute=!
+	if [ "$(sndioctl -n output.mute)" = 1 ]; then
+		avisar "Volume: mudo"
+	else
+		avisar "Volume" "$(pct "$(sndioctl -n output.level)")"
+	fi ;;
+luz+)	xbacklight -inc 10
+	avisar "Brilho" "$(xbacklight -get | cut -d. -f1)" ;;
+luz-)	xbacklight -dec 10
+	avisar "Brilho" "$(xbacklight -get | cut -d. -f1)" ;;
+*)	echo "uso: midia vol+ | vol- | mudo | luz+ | luz-" >&2
+	exit 1 ;;
+esac
