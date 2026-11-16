@@ -1,8 +1,8 @@
 #!/bin/sh
 # install.sh - instala as ferramentas do ambiente dwm Gruvbox no OpenBSD
 #
-# Uso (de dentro da pasta dwm/ do repositorio):
-#   sh install.sh            instala pacotes, compila o dwm e aplica os dotfiles
+# Uso (na raiz do repositorio):
+#   sh install.sh            instala pacotes, compila dwm e st e aplica os dotfiles
 #   sh install.sh -n         so mostra o que faria, sem mudar nada
 #
 # Nada e apagado: arquivos que atrapalham o stow vao para ~/.dotfiles-backup-DATA.
@@ -12,8 +12,8 @@ set -u
 SIMULAR=0
 [ "${1:-}" = "-n" ] && SIMULAR=1
 
-DWM_DIR=$(cd "$(dirname "$0")" && pwd)
-REPO=$(dirname "$DWM_DIR")
+REPO=$(cd "$(dirname "$0")" && pwd)
+DWM_DIR="$REPO/dwm"
 BACKUP="$HOME/.dotfiles-backup-$(date +%Y%m%d-%H%M%S)"
 
 # pacotes essenciais (o ambiente nao sobe sem eles)
@@ -40,7 +40,7 @@ rodar() {
 # 1. conferencias
 [ "$(uname -s)" = "OpenBSD" ] || { aviso "Este script e para OpenBSD."; exit 1; }
 command -v doas >/dev/null || { aviso "doas nao encontrado. Configure o /etc/doas.conf."; exit 1; }
-[ -f "$DWM_DIR/config.h" ] || { aviso "Rode de dentro da pasta dwm/ do repositorio."; exit 1; }
+[ -f "$DWM_DIR/config.h" ] && [ -f "$REPO/st/config.h" ] || { aviso "Arvore incompleta: faltam dwm/ ou st/ ao lado do install.sh."; exit 1; }
 [ "$SIMULAR" -eq 1 ] && msg "Modo simulacao: nada sera alterado."
 
 # 2. pacotes

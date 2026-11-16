@@ -11,7 +11,7 @@ fonte Cascadia Code e áreas de trabalho em algarismos romanos (I a IX).
 |---|---|
 | `dwm/` | Código-fonte do dwm 6.4 com o `config.h` pronto. **Não é pacote do stow**: compila e instala |
 | `st/` | st 0.9.3 (base [st-flexipatch](https://github.com/bakkeby/st-flexipatch)) com jeito de alacritty. Compila e instala |
-| `dwm/install.sh` | Instala pacotes, compila o dwm e aplica o `x11` com o stow |
+| `install.sh` | Na raiz: instala pacotes, compila dwm e st e aplica o `x11` com o stow |
 | `x11/` | Pacote do stow: `.xinitrc`, `.xsession` (xenodm), `.Xresources` e `bin/dwm-status` |
 | `patches/` | Os diffs aplicados no dwm e no st, para reaplicar numa árvore limpa |
 | `CORES.md` | Guia de todas as cores, para mexer sozinho |
@@ -22,7 +22,7 @@ fonte Cascadia Code e áreas de trabalho em algarismos romanos (I a IX).
 
 ```sh
 git clone https://github.com/snake-outerheaven/dwm-config ~/dwm-config
-cd ~/dwm-config/dwm
+cd ~/dwm-config
 sh install.sh -n     # simulação: mostra o que faria
 sh install.sh        # instala de verdade
 startx
