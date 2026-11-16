@@ -13,6 +13,7 @@ fonte Cascadia Code e áreas de trabalho em algarismos romanos (I a IX).
 | `dwm/install.sh` | Instala pacotes, compila o dwm e aplica o `x11` com o stow |
 | `x11/` | Pacote do stow: `.xinitrc`, `.xsession` (xenodm), `.Xresources` e `bin/dwm-status` |
 | `CORES.md` | Guia de todas as cores, para mexer sozinho |
+| `dwm/movestack.c`, `dwm/vanitygaps.c` | Código trazido pelos patches |
 | `LICENSE` | MIT/X, a mesma licença do dwm |
 
 ## Instalação
@@ -41,6 +42,25 @@ startx
 
 O `config.mk` já usa os caminhos do OpenBSD (`${X11INC}/freetype2`).
 
+## Patches aplicados
+
+| Patch | Origem | O que muda |
+|---|---|---|
+| pertag | 6.4 | Cada área (I a IX) guarda o próprio layout, mfact e nmaster |
+| vanitygaps | 6.4 | Espaço entre janelas e bordas; 13 layouts extras |
+| attachbottom | 6.3, ajustado | Janela nova entra no fim da pilha, sem roubar a área principal |
+| swallow | 6.3, ajustado | Programa gráfico aberto pelo `st` toma o lugar do terminal |
+| togglefullscreen | 6.3 | Tela cheia em qualquer janela |
+| hide_vacant_tags | à mão | A barra só mostra áreas ocupadas ou a atual |
+| movestack | à mão | Move a janela para cima ou para baixo na pilha |
+
+Diffs de referência: coleção [bakkeby/patches](https://github.com/bakkeby/patches)
+(o site suckless.org tem as versões oficiais de cada um).
+
+O swallow no OpenBSD usa `kvm_getprocs(3)` para achar o processo pai, por isso o
+`config.mk` liga `-lkvm` e as bibliotecas `xcb`/`xcb-res` (todas no base do X).
+Para desligar o swallow numa janela, use `noswallow = 1` na regra dela.
+
 ## Barra
 
 O `~/bin/dwm-status` escreve na barra a cada 5 s: volume (`sndioctl`), bateria
@@ -58,9 +78,13 @@ dwm-status -1        # imprime a linha uma vez, para testar
 | `Alt+Shift+Enter` | Terminal (`st`) |
 | `Alt+p` | dmenu |
 | `Alt+j` / `Alt+k` | Próxima / anterior janela |
+| `Alt+Shift+j` / `Alt+Shift+k` | Move a janela na pilha (movestack) |
 | `Alt+h` / `Alt+l` | Diminui / aumenta a área principal |
 | `Alt+Enter` | Manda a janela para a área principal |
 | `Alt+t` / `Alt+f` / `Alt+m` | Layout tile / flutuante / monocle |
+| `Alt+y` | Tela cheia na janela atual |
+| `Alt+Super+0` / `Alt+Super+Shift+0` | Liga/desliga os gaps / volta ao padrão |
+| `Alt+Super+u` / `Alt+Super+Shift+u` | Aumenta / diminui todos os gaps |
 | `Alt+1..9` / `Alt+Shift+1..9` | Ir para a área / mandar janela |
 | `Alt+Shift+c` | Fecha a janela |
 | `Alt+Shift+q` | Sai do dwm |
