@@ -46,6 +46,23 @@ startx
 
 O `config.mk` já usa os caminhos do OpenBSD (`${X11INC}/freetype2`).
 
+### make do BSD ou GNU make
+
+Os `Makefile` de `dwm/` e `st/` usam só sintaxe POSIX (`.POSIX:`), então
+funcionam com o `make(1)` do OpenBSD e com o `gmake`. Testado com GNU make e
+bmake: `all`, `install`, `clean` e `dist`.
+
+```sh
+make && doas make install          # make do OpenBSD
+gmake && doas gmake install        # GNU make
+```
+
+Fora do OpenBSD, troque os caminhos na linha de comando (vale para os dois):
+
+```sh
+make X11INC=/usr/include X11LIB=/usr/lib FREETYPEINC=/usr/include/freetype2 KVMLIB=
+```
+
 ## Patches aplicados
 
 | Patch | Origem | O que muda |

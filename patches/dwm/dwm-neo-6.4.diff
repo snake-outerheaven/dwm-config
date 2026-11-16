@@ -1,3 +1,34 @@
+diff -ruN a/Makefile b/Makefile
+--- a/Makefile	2026-11-16 10:53:59.000000000 -0300
++++ b/Makefile	2026-11-16 11:08:03.502031842 -0300
+@@ -1,5 +1,7 @@
+ # dwm - dynamic window manager
+ # See LICENSE file for copyright and license details.
++# Compativel com make(1) do OpenBSD/BSD e com GNU make: so sintaxe POSIX.
++.POSIX:
+ 
+ include config.mk
+ 
+@@ -18,6 +20,9 @@
+ 	${CC} -c ${CFLAGS} $<
+ 
+ ${OBJ}: config.h config.mk
++dwm.o: drw.h util.h movestack.c vanitygaps.c
++drw.o: drw.h util.h
++util.o: util.h
+ 
+ config.h:
+ 	cp config.def.h $@
+@@ -31,7 +36,8 @@
+ dist: clean
+ 	mkdir -p dwm-${VERSION}
+ 	cp -R LICENSE Makefile README config.def.h config.mk\
+-		dwm.1 drw.h util.h ${SRC} dwm.png transient.c dwm-${VERSION}
++		dwm.1 drw.h util.h ${SRC} dwm.png transient.c movestack.c vanitygaps.c\
++		dwm-${VERSION}
+ 	tar -cf dwm-${VERSION}.tar dwm-${VERSION}
+ 	gzip dwm-${VERSION}.tar
+ 	rm -rf dwm-${VERSION}
 diff -ruN a/config.def.h b/config.def.h
 --- a/config.def.h	2026-11-16 10:53:59.000000000 -0300
 +++ b/config.def.h	2026-11-16 10:59:35.278145243 -0300
