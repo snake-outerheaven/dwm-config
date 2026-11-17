@@ -35,6 +35,21 @@ O `install.sh` instala os pacotes essenciais (`dmenu`, `stow`), compila o `st` d
 pacote `x11` com o stow. Arquivos que já existirem no `$HOME` vão para
 `~/.dotfiles-backup-DATA`; nada é apagado.
 
+### Grupos de programas extras
+
+Além dos opcionais acima, o `install.sh` instala três grupos. Todos vêm ligados; escolha com a variável `GRUPOS`:
+
+| Grupo | OpenBSD | FreeBSD (origens ainda não conferidas, exceto o LibreOffice) |
+|---|---|---|
+| `escritorio` | `libreoffice`, `libreoffice-i18n-pt-br`, `zathura`, `zathura-pdf-mupdf` | `editors/libreoffice`, `graphics/zathura`, `graphics/zathura-pdf-mupdf` |
+| `midia` | `mpv` | `multimedia/mpv` |
+| `dev` | `avr-binutils`, `avr-gcc`, `avr-libc`, `avrdude` | `devel/avr-binutils`, `devel/avr-gcc`, `devel/avr-libc`, `devel/avrdude` |
+
+```sh
+GRUPOS="dev midia" sh install.sh   # só esses dois grupos
+GRUPOS="" sh install.sh            # nenhum (o LibreOffice é pesado)
+```
+
 À mão:
 
 ```sh

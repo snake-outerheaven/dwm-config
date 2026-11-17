@@ -5,6 +5,11 @@
 #   sh install.sh            instala pacotes, compila dwm e st e aplica os dotfiles
 #   sh install.sh -n         so mostra o que faria, sem mudar nada
 #
+# Grupos de programas extras (todos por padrao):
+#   GRUPOS="escritorio midia dev"
+#   GRUPOS="dev" sh install.sh       so o grupo dev
+#   GRUPOS="" sh install.sh          nenhum grupo extra (o escritorio e pesado)
+#
 # Nada e apagado: arquivos que atrapalham o stow vao para ~/.dotfiles-backup-DATA.
 
 set -u
@@ -25,10 +30,19 @@ case "$SO" in
 OpenBSD)
 	ESSENCIAIS="dmenu stow"
 	OPCIONAIS="git vim--no_x11 fastfetch cascadia-code feh scrot i3lock xdg-user-dirs dbus dunst libnotify copyq ranger firefox"
+	# nomes conferidos no openports.pl
+	G_ESCRITORIO="libreoffice libreoffice-i18n-pt-br zathura zathura-pdf-mupdf"
+	G_MIDIA="mpv"
+	G_DEV="avr-binutils avr-gcc avr-libc avrdude"
 	;;
 FreeBSD)
 	ESSENCIAIS="dmenu stow pkgconf"
 	OPCIONAIS="git vim fastfetch x11-fonts/cascadia-code feh scrot i3lock xautolock xdg-user-dirs dbus dunst libnotify deskutils/copyq sysutils/py-ranger firefox"
+	# origens de ports ainda NAO conferidas no FreshPorts (so editors/libreoffice foi);
+	# se alguma nao existir, o install.sh avisa e segue
+	G_ESCRITORIO="editors/libreoffice graphics/zathura graphics/zathura-pdf-mupdf"
+	G_MIDIA="multimedia/mpv"
+	G_DEV="devel/avr-binutils devel/avr-gcc devel/avr-libc devel/avrdude"
 	;;
 *)
 	printf '\033[31m!!\033[0m %s\n' "Sistema nao suportado: $SO (use OpenBSD ou FreeBSD)."
@@ -42,6 +56,17 @@ falhas=""
 
 msg()  { printf '\033[33m==>\033[0m %s\n' "$*"; }
 aviso(){ printf '\033[31m!!\033[0m %s\n' "$*"; }
+
+# grupos extras entram na lista de opcionais (falha vira aviso, como os demais)
+GRUPOS="${GRUPOS-escritorio midia dev}"
+for g in $GRUPOS; do
+	case "$g" in
+	escritorio)  OPCIONAIS="$OPCIONAIS $G_ESCRITORIO" ;;
+	midia)       OPCIONAIS="$OPCIONAIS $G_MIDIA" ;;
+	dev)         OPCIONAIS="$OPCIONAIS $G_DEV" ;;
+	*)           aviso "Grupo desconhecido: $g (use escritorio, midia ou dev)" ;;
+	esac
+done
 
 # pacotes: uma interface para pkg_add (OpenBSD) e pkg (FreeBSD)
 instalado() {
