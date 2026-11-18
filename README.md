@@ -30,8 +30,8 @@ sh install.sh        # instala de verdade
 startx
 ```
 
-O `install.sh` instala os pacotes essenciais (`dmenu`, `stow`), compila o `st` do repositório e os opcionais
-(`git`, `vim`, `fastfetch`, `cascadia-code`, `feh`, `scrot`, `i3lock`, `xdg-user-dirs`, `dunst`, `libnotify`, `copyq`, `ranger`, `firefox`), compila e instala o dwm e aplica o
+O `install.sh` instala os pacotes essenciais (`dmenu`, `stow`, `i3lock`), compila o `st` do repositório e os opcionais
+(`git`, `vim`, `fastfetch`, `cascadia-code`, `feh`, `scrot`, `xdg-user-dirs`, `dunst`, `libnotify`, `copyq`, `ranger`, `firefox`), compila e instala o dwm e aplica o
 pacote `x11` com o stow. Arquivos que já existirem no `$HOME` vão para
 `~/.dotfiles-backup-DATA`; nada é apagado.
 
