@@ -88,6 +88,32 @@ static const char *browsercmd[] = { "firefox", NULL };
 static const char *filescmd[]   = { "st", "-e", "ranger", NULL };
 static const char *clipcmd[]    = { "copyq", "toggle", NULL };
 
+/* scripts do dwm-config: instalados pelo install.sh fora do $HOME, como o dwm e o st */
+#define LIBEXEC "/usr/local/libexec/dwm-config/"
+#define SHARE   "/usr/local/share/dwm-config/"
+
+/* print, bloqueio, volume e brilho */
+static const char *printcmd[]  = { LIBEXEC "printar", NULL };
+static const char *printacmd[] = { LIBEXEC "printar", "-s", NULL };
+static const char *lockcmd[]   = { "/usr/local/bin/i3lock", "-c", "2e3436", NULL };
+static const char *volup[]     = { LIBEXEC "midia", "vol+", NULL };
+static const char *voldown[]   = { LIBEXEC "midia", "vol-", NULL };
+static const char *volmute[]   = { LIBEXEC "midia", "mudo", NULL };
+static const char *luzup[]     = { LIBEXEC "midia", "luz+", NULL };
+static const char *luzdown[]   = { LIBEXEC "midia", "luz-", NULL };
+
+/* autostart: o dwm sobe estes programas ao iniciar e os encerra ao sair.
+ * Um comando por linha, cada um terminado em NULL; a lista termina com outro NULL.
+ * Programa que nao estiver instalado e so ignorado. */
+static const char *const autostart[] = {
+	LIBEXEC "dwm-status", NULL,
+	"dunst", "-config", SHARE "dunstrc", NULL,
+	"copyq", NULL,
+	/* bloqueio apos 5 min parado; -no = sem canto de bloqueio; SIGUSR1 bloqueia na hora */
+	"xidle", "-no", "-timeout", "300", "-program", "/usr/local/bin/i3lock -c 2e3436", NULL,
+	NULL
+};
+
 #include "movestack.c"
 static const Key keys[] = {
 	/* modifier                     key        function        argument */

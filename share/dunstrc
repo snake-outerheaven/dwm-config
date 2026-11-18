@@ -1,4 +1,5 @@
-# ~/.config/dunst/dunstrc - notificacoes em amarelo Tango, como o dwm
+# /usr/local/share/dwm-config/dunstrc - notificacoes em amarelo Tango, como o dwm
+# O dwm sobe o dunst com -config apontando para este arquivo.
 # Testar: notify-send "Titulo" "Texto"     Recarregar: pkill dunst (o proximo aviso sobe ele de novo)
 
 [global]

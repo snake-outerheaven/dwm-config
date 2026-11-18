@@ -2,7 +2,7 @@
 # midia - volume (sndioctl) e brilho (xbacklight), com o valor novo no dunst
 #
 # Uso: midia vol+ | vol- | mudo | luz+ | luz-
-# O dwm chama pelas teclas de volume e brilho.
+# O dwm chama pelas teclas de volume e brilho (/usr/local/libexec/dwm-config/midia).
 
 PASSO_VOL=0.1	# 10%
 PASSO_LUZ=10	# 10%

@@ -13,9 +13,15 @@
 # Perfil da maquina (detectado sozinho pela bateria):
 #   notebook   barra com bateria e avisos de bateria baixa
 #   desktop    sem bateria: a bateria some da barra e nao ha avisos
-#   PERFIL=desktop sh install.sh     forca o perfil (grava em ~/.config/dwm-config/perfil)
+#   PERFIL=desktop sh install.sh     forca o perfil (grava em /etc/dwm-config/perfil)
 #
-# Nada e apagado: arquivos que atrapalham o stow vao para ~/.dotfiles-backup-DATA.
+# O que vai para onde:
+#   /usr/local/bin/dwm, /usr/local/bin/st          compilados do repositorio
+#   /usr/local/libexec/dwm-config/                 scripts (barra, print, midia, perfil)
+#   /usr/local/share/dwm-config/                   Xresources e dunstrc
+#   /etc/dwm-config/perfil                         desktop ou notebook
+#   ~/.xinitrc e ~/.xsession                       unicos arquivos no $HOME (stow)
+# O seu ~/bin nunca e tocado. Arquivos que atrapalham o stow vao para ~/.dotfiles-backup-DATA.
 
 set -u
 
@@ -139,8 +145,20 @@ for pac in $STOW_PACOTES; do
 	rodar stow --no-folding -d "$REPO" -t "$HOME" "$pac" || aviso "stow falhou em $pac"
 done
 
-# 4b. perfil da maquina: notebook (com bateria) ou desktop
-PERFIL_DETECTADO=$(sh "$REPO/x11/bin/perfil-maquina" -d)
+# 4b. scripts e arquivos do sistema (fora do $HOME)
+LIBEXEC=/usr/local/libexec/dwm-config
+SHARE=/usr/local/share/dwm-config
+msg "Instalando scripts em $LIBEXEC e arquivos em $SHARE"
+rodar doas install -d -m 755 "$LIBEXEC" "$SHARE" /etc/dwm-config || { aviso "Falha ao criar as pastas do sistema."; exit 1; }
+for f in "$REPO"/scripts/*; do
+	rodar doas install -m 755 "$f" "$LIBEXEC/" || { aviso "Falha ao instalar $f"; exit 1; }
+done
+for f in "$REPO"/share/*; do
+	rodar doas install -m 644 "$f" "$SHARE/" || { aviso "Falha ao instalar $f"; exit 1; }
+done
+
+# 4c. perfil da maquina: notebook (com bateria) ou desktop
+PERFIL_DETECTADO=$(sh "$REPO/scripts/perfil-maquina" -d)
 case "${PERFIL:-}" in
 desktop|notebook) PERFIL_FINAL=$PERFIL ;;
 '')               PERFIL_FINAL=$PERFIL_DETECTADO ;;
@@ -148,11 +166,26 @@ desktop|notebook) PERFIL_FINAL=$PERFIL ;;
                   PERFIL_FINAL=$PERFIL_DETECTADO ;;
 esac
 msg "Perfil da maquina: $PERFIL_FINAL (detectado: $PERFIL_DETECTADO)"
-rodar mkdir -p "$HOME/.config/dwm-config"
 if [ "$SIMULAR" -eq 1 ]; then
-	printf '    [simulado] gravar "%s" em %s\n' "$PERFIL_FINAL" "$HOME/.config/dwm-config/perfil"
+	printf '    [simulado] gravar "%s" em /etc/dwm-config/perfil\n' "$PERFIL_FINAL"
 else
-	echo "$PERFIL_FINAL" > "$HOME/.config/dwm-config/perfil"
+	echo "$PERFIL_FINAL" | doas tee /etc/dwm-config/perfil >/dev/null
+fi
+
+# 4d. limpar o que versoes antigas deste repositorio deixaram no $HOME
+# (so links que apontam para dentro do repositorio e o perfil antigo; nada seu e apagado)
+for alvo in "$HOME/bin/dwm-status" "$HOME/bin/printar" "$HOME/bin/midia" "$HOME/bin/perfil-maquina" \
+    "$HOME/.Xresources" "$HOME/.config/dunst/dunstrc"; do
+	if [ -L "$alvo" ]; then
+		case "$(readlink "$alvo")" in
+		*dwm-config/*) msg "Removendo link antigo: $alvo"; rodar rm "$alvo" ;;
+		esac
+	fi
+done
+if [ -f "$HOME/.config/dwm-config/perfil" ]; then
+	msg "Removendo perfil antigo: ~/.config/dwm-config/perfil (agora em /etc/dwm-config)"
+	rodar rm "$HOME/.config/dwm-config/perfil"
+	rodar rmdir "$HOME/.config/dwm-config" 2>/dev/null
 fi
 
 # 5. resumo

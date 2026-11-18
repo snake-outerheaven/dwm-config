@@ -4,13 +4,13 @@
 # No perfil desktop (sem bateria, ver perfil-maquina) a bateria some da barra
 # e nenhum aviso de bateria e mandado.
 #
-# Uso:  dwm-status &     o .xinitrc ja chama assim
+# Uso:  dwm-status &     o dwm sobe sozinho (autostart no config.h)
 #       dwm-status -1    imprime a linha uma vez no terminal, para testar
 
 INTERVALO=5
 
 # notebook ou desktop: decidido uma vez, ao iniciar
-PERFIL=$(perfil-maquina 2>/dev/null || echo notebook)
+PERFIL=$("$(dirname "$0")/perfil-maquina" 2>/dev/null || echo notebook)
 
 # --- bateria -----------------------------------------------------------------
 pct_bateria() {

@@ -11,8 +11,10 @@ fonte Cascadia Code e áreas de trabalho em algarismos romanos (I a IX).
 |---|---|
 | `dwm/` | Código-fonte do dwm 6.4 com o `config.h` pronto. **Não é pacote do stow**: compila e instala |
 | `st/` | st 0.9.3 (base [st-flexipatch](https://github.com/bakkeby/st-flexipatch)) com jeito de alacritty. Compila e instala |
-| `install.sh` | Na raiz: instala pacotes, compila dwm e st e aplica o `x11` com o stow |
-| `x11/` | Pacote do stow: `.xinitrc`, `.xsession`, `.Xresources`, `.config/dunst/dunstrc` e os scripts `bin/dwm-status`, `bin/printar`, `bin/midia`, `bin/perfil-maquina` |
+| `install.sh` | Na raiz: instala pacotes, compila dwm e st, instala scripts e arquivos no sistema e aplica o `x11` com o stow |
+| `x11/` | Pacote do stow: só `.xinitrc` e `.xsession`. São os únicos arquivos que o setup põe no `$HOME` |
+| `scripts/` | `dwm-status`, `printar`, `midia`, `perfil-maquina`. Instalados em `/usr/local/libexec/dwm-config/`, **nunca** no seu `~/bin` |
+| `share/` | `Xresources` e `dunstrc`, instalados em `/usr/local/share/dwm-config/` |
 | `sistema/openbsd/` | Arquivo de sistema para bloquear a tela antes de suspender. Fora do stow: instalar como root |
 | `patches/` | Os diffs aplicados no dwm e no st, para reaplicar numa árvore limpa |
 | `CORES.md` | Guia de todas as cores, para mexer sozinho |
@@ -30,8 +32,8 @@ startx
 ```
 
 O `install.sh` instala os pacotes essenciais (`dmenu`, `stow`, `i3lock`), compila o `st` do repositório e os opcionais
-(`git`, `vim`, `fastfetch`, `cascadia-code`, `feh`, `scrot`, `xdg-user-dirs`, `dunst`, `libnotify`, `copyq`, `ranger`, `firefox`), compila e instala o dwm e aplica o
-pacote `x11` com o stow. Arquivos que já existirem no `$HOME` vão para
+(`git`, `vim`, `fastfetch`, `cascadia-code`, `feh`, `scrot`, `xdg-user-dirs`, `dunst`, `libnotify`, `copyq`, `ranger`, `firefox`), compila e instala o dwm, instala os scripts em
+`/usr/local/libexec/dwm-config/`, grava o perfil em `/etc/dwm-config/perfil` e aplica o pacote `x11` com o stow. Arquivos que já existirem no `$HOME` vão para
 `~/.dotfiles-backup-DATA`; nada é apagado.
 
 ### Grupos de programas extras
@@ -56,7 +58,11 @@ doas pkg_delete dwm                  # se o dwm do pacote estiver instalado
 cd dwm && make && doas make install
 doas pkg_delete st                   # se o st do pacote estiver instalado
 cd ../st && make && doas make install
-cd .. && stow --no-folding x11       # ~/.xinitrc, ~/.xsession, ~/.Xresources, ~/bin/dwm-status
+cd ..
+doas install -d /usr/local/libexec/dwm-config /usr/local/share/dwm-config /etc/dwm-config
+doas install -m 755 scripts/* /usr/local/libexec/dwm-config/
+doas install -m 644 share/* /usr/local/share/dwm-config/
+stow --no-folding x11                # só ~/.xinitrc e ~/.xsession
 startx
 ```
 
@@ -91,6 +97,7 @@ make X11INC=/usr/include X11LIB=/usr/lib FREETYPEINC=/usr/include/freetype2 KVML
 | hide_vacant_tags | à mão | A barra só mostra áreas ocupadas ou a atual |
 | movestack | à mão | Move a janela para cima ou para baixo na pilha |
 | scratchpad | à mão | Um st flutuante que aparece e some com ``Alt+` `` |
+| autostart | à mão | O dwm sobe os programas da sessão (`autostart[]` no `config.h`) e os encerra ao sair |
 
 Diffs de referência: coleção [bakkeby/patches](https://github.com/bakkeby/patches)
 (o site suckless.org tem as versões oficiais de cada um).
@@ -114,7 +121,7 @@ O dmenu fica como vem. O st foi ajustado para lembrar o alacritty:
 | Modo vi (selecionar com o teclado) | `Ctrl+Shift+Espaço` ou `Ctrl+Shift+Esc` |
 | Busca | `Ctrl+Shift+f` / `Ctrl+Shift+b` |
 | Linhas e caixas desenhadas pelo st | Automático (boxdraw) |
-| Cores Tango (cursor amarelo `#edd400`) | Do `config.h`; o `~/.Xresources` tem prioridade |
+| Cores Tango (cursor amarelo `#edd400`) | Do `config.h` e de `/usr/local/share/dwm-config/Xresources`; um `~/.Xresources` seu, se existir, tem prioridade |
 
 Patches ligados em `st/patches.h`: reflow, scrollback (+ mouse), clipboard,
 keyboard_select, boxdraw, anysize e xresources. Para ligar ou desligar outro,
@@ -132,18 +139,18 @@ Sem `~/.fehbg`, fica o fundo sólido `#2e3436`.
 
 ## Barra
 
-O `~/bin/dwm-status` escreve na barra a cada 5 s: cpu (`kern.cp_time`), memória ativa
+O `dwm-status` (em `/usr/local/libexec/dwm-config/`) escreve na barra a cada 5 s: cpu (`kern.cp_time`), memória ativa
 (`top`), volume (`sndioctl`), bateria (`apm`, ou os sensores ACPI) e data.
-O `~/bin` é o lugar padrão do OpenBSD para scripts do usuário.
+O dwm sobe o script sozinho (autostart) e o encerra ao sair.
 
 ```sh
-dwm-status -1        # imprime a linha uma vez, para testar
+/usr/local/libexec/dwm-config/dwm-status -1    # imprime a linha uma vez, para testar
 ```
 
 ### Notebook ou desktop
 
 O mesmo setup serve para os dois. O `install.sh` detecta se a máquina tem bateria
-(sensor `acpibat0` ou `apm -b`) e grava o perfil em `~/.config/dwm-config/perfil`:
+(sensor `acpibat0` ou `apm -b`) e grava o perfil em `/etc/dwm-config/perfil`:
 
 | Perfil | Barra | Avisos de bateria |
 |---|---|---|
@@ -151,10 +158,10 @@ O mesmo setup serve para os dois. O `install.sh` detecta se a máquina tem bater
 | `desktop` | `cpu \| mem \| vol \| data` | Nenhum |
 
 ```sh
-perfil-maquina                    # mostra o perfil em uso
-perfil-maquina -d                 # mostra só o que o hardware indica
+/usr/local/libexec/dwm-config/perfil-maquina      # mostra o perfil em uso
+/usr/local/libexec/dwm-config/perfil-maquina -d   # mostra só o que o hardware indica
 PERFIL=desktop sh install.sh      # força o perfil na instalação
-echo desktop > ~/.config/dwm-config/perfil   # ou troca à mão; vale no próximo startx
+echo desktop | doas tee /etc/dwm-config/perfil    # ou troca à mão; vale no próximo startx
 ```
 
 ## Atalhos (Mod = Alt)
@@ -176,20 +183,20 @@ echo desktop > ~/.config/dwm-config/perfil   # ou troca à mão; vale no próxim
 | `Alt+Super+0` / `Alt+Super+Shift+0` | Liga/desliga os gaps / volta ao padrão |
 | `Alt+Super+u` / `Alt+Super+Shift+u` | Aumenta / diminui todos os gaps |
 | `Alt+1..9` / `Alt+Shift+1..9` | Ir para a área / mandar janela |
-| `Print` / `Alt+Print` | Print da tela / de uma área, em `~/Downloads` (`printar`) |
+| `Print` / `Alt+Print` | Print da tela / de uma área, em `~/Downloads` |
 | `Alt+Shift+x` | Bloqueia a tela (`i3lock`) |
-| Teclas de volume / brilho | `~/bin/midia`: muda e mostra o valor novo no dunst |
+| Teclas de volume / brilho | Muda e mostra o valor novo no dunst |
 | `Alt+Shift+c` | Fecha a janela |
 | `Alt+Shift+q` | Sai do dwm |
 
 ## Desktop
 
-O que sobe com o `startx` (`x11/.xinitrc`):
+O que o **próprio dwm** sobe ao iniciar e encerra ao sair (`autostart[]` no `dwm/config.h`):
 
 | Peça | Para quê |
 |---|---|
 | `dwm-status` | Barra: cpu, memória, volume, bateria e data; avisa a bateria em 15% e 5% |
-| `dunst` | Notificações em amarelo Tango (print salvo, volume, brilho, bateria, programas) |
+| `dunst -config /usr/local/share/dwm-config/dunstrc` | Notificações em amarelo Tango (print salvo, volume, brilho, bateria, programas) |
 | `copyq` | Histórico do clipboard (`Alt+v`) |
 | `xidle` (base) | Chama o `i3lock` após 5 min parado |
 

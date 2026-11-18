@@ -1,5 +1,5 @@
-! ~/.Xresources - paleta Tango (amarelo Tango), igual ao dwm
-! Aplicar sem reiniciar: xrdb -merge ~/.Xresources  (vale para janelas novas)
+! /usr/local/share/dwm-config/Xresources - paleta Tango (amarelo Tango), igual ao dwm
+! O .xinitrc carrega este arquivo e depois o seu ~/.Xresources, se existir (o seu vence).
 
 ! base
 *.background:   #2e3436

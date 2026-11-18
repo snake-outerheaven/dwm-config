@@ -168,6 +168,8 @@ static void attachbottom(Client *c);
 static void attachstack(Client *c);
 static void buttonpress(XEvent *e);
 static void checkotherwm(void);
+static void autostart_exec(void);
+static void autostart_kill(void);
 static void cleanup(void);
 static void cleanupmon(Monitor *mon);
 static void clientmessage(XEvent *e);
@@ -300,6 +302,10 @@ static xcb_connection_t *xcon;
 
 /* configuration, allows nested code to access above variables */
 #include "config.h"
+
+/* autostart: o dwm sobe os programas de autostart[] (config.h) e os encerra ao sair */
+static pid_t *autostart_pids;
+static size_t autostart_len;
 
 static unsigned int scratchtag = 1 << LENGTH(tags);
 
@@ -530,6 +536,39 @@ checkotherwm(void)
 	XSync(dpy, False);
 	XSetErrorHandler(xerror);
 	XSync(dpy, False);
+}
+
+void
+autostart_exec(void)
+{
+	const char *const *p;
+	size_t i = 0;
+
+	for (p = autostart; *p; autostart_len++, p++)
+		while (*++p);
+	autostart_pids = ecalloc(autostart_len ? autostart_len : 1, sizeof(pid_t));
+	for (p = autostart; *p; i++, p++) {
+		if ((autostart_pids[i] = fork()) == 0) {
+			if (dpy)
+				close(ConnectionNumber(dpy));
+			setsid();
+			execvp(*p, (char *const *)p);
+			fprintf(stderr, "dwm: autostart: execvp %s falhou\n", *p);
+			_exit(EXIT_FAILURE);
+		}
+		while (*++p);
+	}
+}
+
+void
+autostart_kill(void)
+{
+	size_t i;
+
+	for (i = 0; i < autostart_len; i++)
+		if (autostart_pids[i] > 0)
+			kill(-autostart_pids[i], SIGTERM);	/* o grupo inteiro (setsid): leva junto o sleep do script */
+	free(autostart_pids);
 }
 
 void
@@ -2517,12 +2556,14 @@ main(int argc, char *argv[])
 		die("dwm: cannot get xcb connection\n");
 	checkotherwm();
 	setup();
+	autostart_exec();
 #ifdef __OpenBSD__
 	if (pledge("stdio rpath proc exec ps", NULL) == -1)
 		die("pledge");
 #endif /* __OpenBSD__ */
 	scan();
 	run();
+	autostart_kill();
 	cleanup();
 	XCloseDisplay(dpy);
 	return EXIT_SUCCESS;
