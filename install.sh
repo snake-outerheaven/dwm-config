@@ -10,6 +10,11 @@
 #   GRUPOS="dev" sh install.sh       so o grupo dev
 #   GRUPOS="" sh install.sh          nenhum grupo extra (o escritorio e pesado)
 #
+# Perfil da maquina (detectado sozinho pela bateria):
+#   notebook   barra com bateria e avisos de bateria baixa
+#   desktop    sem bateria: a bateria some da barra e nao ha avisos
+#   PERFIL=desktop sh install.sh     forca o perfil (grava em ~/.config/dwm-config/perfil)
+#
 # Nada e apagado: arquivos que atrapalham o stow vao para ~/.dotfiles-backup-DATA.
 
 set -u
@@ -133,6 +138,22 @@ for pac in $STOW_PACOTES; do
 	done
 	rodar stow --no-folding -d "$REPO" -t "$HOME" "$pac" || aviso "stow falhou em $pac"
 done
+
+# 4b. perfil da maquina: notebook (com bateria) ou desktop
+PERFIL_DETECTADO=$(sh "$REPO/x11/bin/perfil-maquina" -d)
+case "${PERFIL:-}" in
+desktop|notebook) PERFIL_FINAL=$PERFIL ;;
+'')               PERFIL_FINAL=$PERFIL_DETECTADO ;;
+*)                aviso "PERFIL=$PERFIL invalido (use desktop ou notebook); usando o detectado"
+                  PERFIL_FINAL=$PERFIL_DETECTADO ;;
+esac
+msg "Perfil da maquina: $PERFIL_FINAL (detectado: $PERFIL_DETECTADO)"
+rodar mkdir -p "$HOME/.config/dwm-config"
+if [ "$SIMULAR" -eq 1 ]; then
+	printf '    [simulado] gravar "%s" em %s\n' "$PERFIL_FINAL" "$HOME/.config/dwm-config/perfil"
+else
+	echo "$PERFIL_FINAL" > "$HOME/.config/dwm-config/perfil"
+fi
 
 # 5. resumo
 msg "Pronto."

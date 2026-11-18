@@ -12,7 +12,7 @@ fonte Cascadia Code e áreas de trabalho em algarismos romanos (I a IX).
 | `dwm/` | Código-fonte do dwm 6.4 com o `config.h` pronto. **Não é pacote do stow**: compila e instala |
 | `st/` | st 0.9.3 (base [st-flexipatch](https://github.com/bakkeby/st-flexipatch)) com jeito de alacritty. Compila e instala |
 | `install.sh` | Na raiz: instala pacotes, compila dwm e st e aplica o `x11` com o stow |
-| `x11/` | Pacote do stow: `.xinitrc`, `.xsession`, `.Xresources`, `.config/dunst/dunstrc` e os scripts `bin/dwm-status`, `bin/printar`, `bin/midia` |
+| `x11/` | Pacote do stow: `.xinitrc`, `.xsession`, `.Xresources`, `.config/dunst/dunstrc` e os scripts `bin/dwm-status`, `bin/printar`, `bin/midia`, `bin/perfil-maquina` |
 | `sistema/openbsd/` | Arquivo de sistema para bloquear a tela antes de suspender. Fora do stow: instalar como root |
 | `patches/` | Os diffs aplicados no dwm e no st, para reaplicar numa árvore limpa |
 | `CORES.md` | Guia de todas as cores, para mexer sozinho |
@@ -138,6 +138,23 @@ O `~/bin` é o lugar padrão do OpenBSD para scripts do usuário.
 
 ```sh
 dwm-status -1        # imprime a linha uma vez, para testar
+```
+
+### Notebook ou desktop
+
+O mesmo setup serve para os dois. O `install.sh` detecta se a máquina tem bateria
+(sensor `acpibat0` ou `apm -b`) e grava o perfil em `~/.config/dwm-config/perfil`:
+
+| Perfil | Barra | Avisos de bateria |
+|---|---|---|
+| `notebook` | `cpu \| mem \| vol \| bat \| data` | Em 15% e 5% |
+| `desktop` | `cpu \| mem \| vol \| data` | Nenhum |
+
+```sh
+perfil-maquina                    # mostra o perfil em uso
+perfil-maquina -d                 # mostra só o que o hardware indica
+PERFIL=desktop sh install.sh      # força o perfil na instalação
+echo desktop > ~/.config/dwm-config/perfil   # ou troca à mão; vale no próximo startx
 ```
 
 ## Atalhos (Mod = Alt)

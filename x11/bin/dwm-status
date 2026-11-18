@@ -1,11 +1,16 @@
 #!/bin/sh
 # dwm-status - barra do dwm no OpenBSD: cpu, memoria, volume, bateria e data
 # Tambem avisa (notify-send/dunst) quando a bateria fica baixa: 15% e 5%.
+# No perfil desktop (sem bateria, ver perfil-maquina) a bateria some da barra
+# e nenhum aviso de bateria e mandado.
 #
 # Uso:  dwm-status &     o .xinitrc ja chama assim
 #       dwm-status -1    imprime a linha uma vez no terminal, para testar
 
 INTERVALO=5
+
+# notebook ou desktop: decidido uma vez, ao iniciar
+PERFIL=$(perfil-maquina 2>/dev/null || echo notebook)
 
 # --- bateria -----------------------------------------------------------------
 pct_bateria() {
@@ -85,6 +90,7 @@ volume() {
 # --- aviso de bateria baixa (uma vez por nivel, ate voltar a carregar) -------
 avisado=""	# "", "15" ou "5"
 avisar_bateria() {	# $1 = pct
+	[ "$PERFIL" = desktop ] && return
 	[ -n "$1" ] || return
 	command -v notify-send >/dev/null || return
 	if na_tomada || [ "$1" -gt 15 ]; then
@@ -101,6 +107,11 @@ avisar_bateria() {	# $1 = pct
 }
 
 linha() {	# $1 = cpu %, $2 = bateria %
+	if [ "$PERFIL" = desktop ]; then
+		printf ' cpu %s%% | %s | %s | %s ' \
+		    "$1" "$(memoria)" "$(volume)" "$(date '+%d/%m %H:%M')"
+		return
+	fi
 	tomada=""
 	na_tomada && tomada="+"
 	printf ' cpu %s%% | %s | %s | bat %s%%%s | %s ' \

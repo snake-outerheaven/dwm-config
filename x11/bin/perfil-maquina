@@ -1,0 +1,40 @@
+#!/bin/sh
+# perfil-maquina - diz se a maquina e "notebook" (tem bateria) ou "desktop"
+#
+# Ordem de decisao:
+#   1. variavel PERFIL=desktop|notebook        (forcar na hora)
+#   2. arquivo ~/.config/dwm-config/perfil     (gravado pelo install.sh)
+#   3. deteccao: sensor acpibat0 ou apm -b com bateria presente
+#
+# Uso: perfil-maquina          imprime o perfil
+#      perfil-maquina -d       ignora 1 e 2: so a deteccao do hardware
+
+ARQ="$HOME/.config/dwm-config/perfil"
+
+detectar() {
+	# sensor ACPI de bateria: o sinal mais confiavel no OpenBSD
+	if sysctl -n hw.sensors.acpibat0.watthour0 >/dev/null 2>&1; then
+		echo notebook
+		return
+	fi
+	# apm -b: 0 alta, 1 baixa, 2 critica, 3 carregando, 4 ausente, 255 desconhecida
+	case "$(apm -b 2>/dev/null)" in
+	0|1|2|3) echo notebook ;;
+	*)       echo desktop ;;
+	esac
+}
+
+valido() { [ "$1" = desktop ] || [ "$1" = notebook ]; }
+
+if [ "${1:-}" = -d ]; then
+	detectar
+	exit 0
+fi
+
+if valido "${PERFIL:-}"; then
+	echo "$PERFIL"
+elif [ -r "$ARQ" ] && valido "$(head -n1 "$ARQ")"; then
+	head -n1 "$ARQ"
+else
+	detectar
+fi
