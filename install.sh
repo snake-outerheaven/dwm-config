@@ -28,16 +28,17 @@ SO=$(uname -s)
 # No FreeBSD, nomes com "/" sao origens de ports (pkg install aceita os dois).
 case "$SO" in
 OpenBSD)
-	ESSENCIAIS="dmenu stow"
-	OPCIONAIS="git vim--no_x11 fastfetch cascadia-code feh scrot i3lock xdg-user-dirs dbus dunst libnotify copyq ranger firefox"
+	# i3lock e essencial: Alt+Shift+x e o bloqueio por inatividade (xidle) dependem dele
+	ESSENCIAIS="dmenu stow i3lock"
+	OPCIONAIS="git vim--no_x11 fastfetch cascadia-code feh scrot xdg-user-dirs dbus dunst libnotify copyq ranger firefox"
 	# nomes conferidos no openports.pl
 	G_ESCRITORIO="libreoffice libreoffice-i18n-pt-br zathura zathura-pdf-mupdf"
 	G_MIDIA="mpv"
 	G_DEV="avr-binutils avr-gcc avr-libc avrdude"
 	;;
 FreeBSD)
-	ESSENCIAIS="dmenu stow pkgconf"
-	OPCIONAIS="git vim fastfetch x11-fonts/cascadia-code feh scrot i3lock xautolock xdg-user-dirs dbus dunst libnotify deskutils/copyq sysutils/py-ranger firefox"
+	ESSENCIAIS="dmenu stow pkgconf i3lock"
+	OPCIONAIS="git vim fastfetch x11-fonts/cascadia-code feh scrot xautolock xdg-user-dirs dbus dunst libnotify deskutils/copyq sysutils/py-ranger firefox"
 	# origens de ports ainda NAO conferidas no FreshPorts (so editors/libreoffice foi);
 	# se alguma nao existir, o install.sh avisa e segue
 	G_ESCRITORIO="editors/libreoffice graphics/zathura graphics/zathura-pdf-mupdf"
@@ -71,7 +72,7 @@ done
 # pacotes: uma interface para pkg_add (OpenBSD) e pkg (FreeBSD)
 instalado() {
 	case "$SO" in
-	OpenBSD) pkg_info -e "${1%%--*}-*" >/dev/null 2>&1 ;;
+	OpenBSD) pkg_info -e "${1%%--*}-[0-9]*" >/dev/null 2>&1 ;;
 	FreeBSD) case "$1" in
 	         */*) pkg info -O "$1" >/dev/null 2>&1 ;;
 	         *)   pkg info -e "$1" >/dev/null 2>&1 ;;
@@ -158,6 +159,8 @@ done
 # 5. resumo
 msg "Pronto."
 [ -n "$falhas" ] && aviso "Pacotes opcionais que nao instalaram:$falhas"
+[ "$SIMULAR" -eq 1 ] || command -v i3lock >/dev/null || \
+	aviso "i3lock nao encontrado no PATH: Alt+Shift+x e o bloqueio automatico nao vao funcionar."
 fc-list 2>/dev/null | grep -qi "cascadia code" || \
 	aviso "Fonte Cascadia Code nao encontrada: coloque os .ttf em ~/.fonts e rode fc-cache."
 [ "$SO" = FreeBSD ] && msg "FreeBSD: veja o FREEBSD.md (dbus, grupo video, bloqueio antes de suspender)."
