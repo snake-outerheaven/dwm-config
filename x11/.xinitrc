@@ -1,5 +1,5 @@
 #!/bin/sh
-# ~/.xinitrc - dwm amarelo Tango no OpenBSD e no FreeBSD (iniciar com: startx)
+# ~/.xinitrc - dwm amarelo Tango no OpenBSD (iniciar com: startx)
 
 # ~/bin no PATH tambem no login pelo xenodm (printar, dwm-status)
 case ":$PATH:" in *":$HOME/bin:"*) ;; *) PATH="$HOME/bin:$PATH"; export PATH ;; esac
@@ -22,18 +22,9 @@ xsetroot -solid "#2e3436"
 command -v dunst >/dev/null && dunst &
 command -v copyq >/dev/null && copyq &
 
-# bloqueio apos 5 min parado, com o i3lock
-#   OpenBSD: xidle (base); -no = sem canto de bloqueio; SIGUSR1 bloqueia na hora
-#   FreeBSD: xautolock; "xautolock -locknow" bloqueia na hora (o rc.suspend usa)
-case "$(uname -s)" in
-OpenBSD)
-	[ -x /usr/local/bin/i3lock ] &&
-	    xidle -no -timeout 300 -program "/usr/local/bin/i3lock -c 2e3436" &
-	;;
-FreeBSD)
-	command -v xautolock >/dev/null && command -v i3lock >/dev/null &&
-	    xautolock -time 5 -locker "i3lock -n -c 2e3436" -detectsleep &
-	;;
-esac
+# bloqueio apos 5 min parado: o xidle (base) chama o i3lock; -no = sem canto de bloqueio
+# SIGUSR1 ao xidle bloqueia na hora (o /etc/apm/suspend usa)
+[ -x /usr/local/bin/i3lock ] &&
+    xidle -no -timeout 300 -program "/usr/local/bin/i3lock -c 2e3436" &
 
 exec dwm

@@ -46,11 +46,6 @@
 #include <sys/sysctl.h>
 #include <kvm.h>
 #endif /* __OpenBSD */
-#ifdef __FreeBSD__
-#include <sys/types.h>
-#include <sys/sysctl.h>
-#include <sys/user.h>
-#endif /* __FreeBSD__ */
 
 #include "drw.h"
 #include "util.h"
@@ -2304,7 +2299,7 @@ winpid(Window w)
 {
 	pid_t result = 0;
 
-#if defined(__linux__) || defined(__FreeBSD__)
+#ifdef __linux__
 	xcb_res_client_id_spec_t spec = {0};
 	spec.client = w;
 	spec.mask = XCB_RES_CLIENT_ID_MASK_LOCAL_CLIENT_PID;
@@ -2330,7 +2325,7 @@ winpid(Window w)
 
 	if (result == (pid_t)-1)
 		result = 0;
-#endif /* __linux__ || __FreeBSD__ */
+#endif /* __linux__ */
 #ifdef __OpenBSD__
 	Atom type;
 	int format;
@@ -2381,15 +2376,6 @@ getparentprocess(pid_t p)
 	kvm_close(kd);	/* sem isto, cada janela nova vazava um kvm_t */
 #endif /* __OpenBSD__ */
 
-#ifdef __FreeBSD__
-	struct kinfo_proc kp;
-	size_t len = sizeof(kp);
-	int mib[4] = { CTL_KERN, KERN_PROC, KERN_PROC_PID, (int)p };
-
-	if (sysctl(mib, 4, &kp, &len, NULL, 0) == -1 || len == 0)
-		return 0;
-	v = kp.ki_ppid;
-#endif /* __FreeBSD__ */
 
 	return (pid_t)v;
 }

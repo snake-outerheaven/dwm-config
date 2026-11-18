@@ -1,6 +1,6 @@
 # dwm-config
 
-dwm 6.4 para OpenBSD e FreeBSD, em amarelo Tango (`#edd400` sobre `#2e3436`),
+dwm 6.4 para OpenBSD, em amarelo Tango (`#edd400` sobre `#2e3436`),
 fonte Cascadia Code e áreas de trabalho em algarismos romanos (I a IX).
 
 ![dwm-config no OpenBSD](docs/dwm.png)
@@ -13,8 +13,7 @@ fonte Cascadia Code e áreas de trabalho em algarismos romanos (I a IX).
 | `st/` | st 0.9.3 (base [st-flexipatch](https://github.com/bakkeby/st-flexipatch)) com jeito de alacritty. Compila e instala |
 | `install.sh` | Na raiz: instala pacotes, compila dwm e st e aplica o `x11` com o stow |
 | `x11/` | Pacote do stow: `.xinitrc`, `.xsession`, `.Xresources`, `.config/dunst/dunstrc` e os scripts `bin/dwm-status`, `bin/printar`, `bin/midia` |
-| `sistema/openbsd/`, `sistema/freebsd/` | Arquivos de sistema por SO (bloquear antes de suspender, rc.conf, doas). Fora do stow: instalar como root |
-| `FREEBSD.md` | Guia do desktop no FreeBSD 15 com ZFS |
+| `sistema/openbsd/` | Arquivo de sistema para bloquear a tela antes de suspender. Fora do stow: instalar como root |
 | `patches/` | Os diffs aplicados no dwm e no st, para reaplicar numa árvore limpa |
 | `CORES.md` | Guia de todas as cores, para mexer sozinho |
 | `dwm/movestack.c`, `dwm/vanitygaps.c` | Código trazido pelos patches |
@@ -39,11 +38,11 @@ pacote `x11` com o stow. Arquivos que já existirem no `$HOME` vão para
 
 Além dos opcionais acima, o `install.sh` instala três grupos. Todos vêm ligados; escolha com a variável `GRUPOS`:
 
-| Grupo | OpenBSD | FreeBSD (origens ainda não conferidas, exceto o LibreOffice) |
-|---|---|---|
-| `escritorio` | `libreoffice`, `libreoffice-i18n-pt-br`, `zathura`, `zathura-pdf-mupdf` | `editors/libreoffice`, `graphics/zathura`, `graphics/zathura-pdf-mupdf` |
-| `midia` | `mpv` | `multimedia/mpv` |
-| `dev` | `avr-binutils`, `avr-gcc`, `avr-libc`, `avrdude` | `devel/avr-binutils`, `devel/avr-gcc`, `devel/avr-libc`, `devel/avrdude` |
+| Grupo | Pacotes |
+|---|---|
+| `escritorio` | `libreoffice`, `libreoffice-i18n-pt-br`, `zathura`, `zathura-pdf-mupdf` |
+| `midia` | `mpv` |
+| `dev` | `avr-binutils`, `avr-gcc`, `avr-libc`, `avrdude` |
 
 ```sh
 GRUPOS="dev midia" sh install.sh   # só esses dois grupos
@@ -177,7 +176,7 @@ O que sobe com o `startx` (`x11/.xinitrc`):
 | `copyq` | Histórico do clipboard (`Alt+v`) |
 | `xidle` (base) | Chama o `i3lock` após 5 min parado |
 
-Bloquear antes de suspender (tampa ou `zzz`), como root, no OpenBSD (no FreeBSD, veja o `FREEBSD.md`):
+Bloquear antes de suspender (tampa ou `zzz`), como root:
 
 ```sh
 install -o root -g wheel -m 755 ~/dwm-config/sistema/openbsd/etc/apm/suspend /etc/apm/suspend

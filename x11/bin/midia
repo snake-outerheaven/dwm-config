@@ -1,11 +1,9 @@
 #!/bin/sh
-# midia - volume e brilho, com o valor novo no dunst (OpenBSD e FreeBSD)
-#   OpenBSD: sndioctl e xbacklight      FreeBSD: mixer e backlight (base)
+# midia - volume (sndioctl) e brilho (xbacklight), com o valor novo no dunst
 #
 # Uso: midia vol+ | vol- | mudo | luz+ | luz-
 # O dwm chama pelas teclas de volume e brilho.
 
-SO=$(uname -s)
 PASSO_VOL=0.1	# 10%
 PASSO_LUZ=10	# 10%
 
@@ -25,42 +23,24 @@ pct() {	# 0.700 -> 70
 
 # --- som ----------------------------------------------------------------------
 vol_mudar() {	# $1 = + ou -
-	case "$SO" in
-	FreeBSD) mixer vol.mute=off "vol.volume=$1$PASSO_VOL" >/dev/null ;;
-	*)       sndioctl -q output.mute=0 "output.level=$1$PASSO_VOL" ;;
-	esac
+	sndioctl -q output.mute=0 "output.level=$1$PASSO_VOL"
 }
 vol_alternar_mudo() {
-	case "$SO" in
-	FreeBSD) mixer vol.mute=toggle >/dev/null ;;
-	*)       sndioctl -q output.mute=! ;;
-	esac
+	sndioctl -q output.mute=!
 }
 vol_nivel() {	# 0-1
-	case "$SO" in
-	FreeBSD) mixer -o vol.volume | sed 's/.*=//; s/:.*//' ;;
-	*)       sndioctl -n output.level ;;
-	esac
+	sndioctl -n output.level
 }
 vol_mudo() {
-	case "$SO" in
-	FreeBSD) [ "$(mixer -o vol.mute | sed 's/.*=//')" = on ] ;;
-	*)       [ "$(sndioctl -n output.mute)" = 1 ] ;;
-	esac
+	[ "$(sndioctl -n output.mute)" = 1 ]
 }
 
 # --- brilho -------------------------------------------------------------------
 luz_mudar() {	# $1 = + ou -
-	case "$SO" in
-	FreeBSD) if [ "$1" = + ]; then backlight incr "$PASSO_LUZ"; else backlight decr "$PASSO_LUZ"; fi ;;
-	*)       if [ "$1" = + ]; then xbacklight -inc "$PASSO_LUZ"; else xbacklight -dec "$PASSO_LUZ"; fi ;;
-	esac
+	if [ "$1" = + ]; then xbacklight -inc "$PASSO_LUZ"; else xbacklight -dec "$PASSO_LUZ"; fi
 }
 luz_nivel() {	# 0-100
-	case "$SO" in
-	FreeBSD) backlight -q ;;
-	*)       xbacklight -get | cut -d. -f1 ;;
-	esac
+	xbacklight -get | cut -d. -f1
 }
 
 case "${1:-}" in

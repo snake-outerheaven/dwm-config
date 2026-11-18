@@ -9,12 +9,10 @@ MANPREFIX = $(PREFIX)/share/man
 ICONPREFIX = $(PREFIX)/share/pixmaps
 ICONNAME = st.png
 
-# Sistema detectado sozinho (OpenBSD, FreeBSD ou Linux); troque na linha de comando se precisar
+# Sistema detectado sozinho (OpenBSD; Linux so para testar); troque na linha de comando se precisar
 OS != uname -s
 X11INC_OpenBSD = /usr/X11R6/include
 X11LIB_OpenBSD = /usr/X11R6/lib
-X11INC_FreeBSD = /usr/local/include
-X11LIB_FreeBSD = /usr/local/lib
 X11INC_Linux   = /usr/include
 X11LIB_Linux   = /usr/lib
 X11INC = $(X11INC_$(OS))
@@ -57,9 +55,8 @@ STCPPFLAGS = -DVERSION=\"$(VERSION)\" -DICON=\"$(ICONPREFIX)/$(ICONNAME)\" -D_XO
 STCFLAGS = $(INCS) $(STCPPFLAGS) $(CPPFLAGS) $(CFLAGS)
 STLDFLAGS = $(LIBS) $(LDFLAGS)
 
-# OpenBSD instala as manpages em $(PREFIX)/man; FreeBSD e Linux em share/man
+# OpenBSD instala as manpages em $(PREFIX)/man; Linux em share/man
 MANPREFIX_OpenBSD = $(PREFIX)/man
-MANPREFIX_FreeBSD = $(PREFIX)/share/man
 MANPREFIX_Linux   = $(PREFIX)/share/man
 MANPREFIX = $(MANPREFIX_$(OS))
 

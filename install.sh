@@ -1,5 +1,5 @@
 #!/bin/sh
-# install.sh - instala o ambiente dwm amarelo Tango no OpenBSD ou no FreeBSD
+# install.sh - instala o ambiente dwm amarelo Tango no OpenBSD
 #
 # Uso (na raiz do repositorio):
 #   sh install.sh            instala pacotes, compila dwm e st e aplica os dotfiles
@@ -25,7 +25,6 @@ SO=$(uname -s)
 
 # pacotes: essenciais (o ambiente nao sobe sem eles) e opcionais (falha vira aviso).
 # O st vem compilado da pasta st/ do repositorio (scrollback, reflow, modo vi).
-# No FreeBSD, nomes com "/" sao origens de ports (pkg install aceita os dois).
 case "$SO" in
 OpenBSD)
 	# i3lock e essencial: Alt+Shift+x e o bloqueio por inatividade (xidle) dependem dele
@@ -36,17 +35,8 @@ OpenBSD)
 	G_MIDIA="mpv"
 	G_DEV="avr-binutils avr-gcc avr-libc avrdude"
 	;;
-FreeBSD)
-	ESSENCIAIS="dmenu stow pkgconf i3lock"
-	OPCIONAIS="git vim fastfetch x11-fonts/cascadia-code feh scrot xautolock xdg-user-dirs dbus dunst libnotify deskutils/copyq sysutils/py-ranger firefox"
-	# origens de ports ainda NAO conferidas no FreshPorts (so editors/libreoffice foi);
-	# se alguma nao existir, o install.sh avisa e segue
-	G_ESCRITORIO="editors/libreoffice graphics/zathura graphics/zathura-pdf-mupdf"
-	G_MIDIA="multimedia/mpv"
-	G_DEV="devel/avr-binutils devel/avr-gcc devel/avr-libc devel/avrdude"
-	;;
 *)
-	printf '\033[31m!!\033[0m %s\n' "Sistema nao suportado: $SO (use OpenBSD ou FreeBSD)."
+	printf '\033[31m!!\033[0m %s\n' "Sistema nao suportado: $SO (este setup e so para OpenBSD)."
 	exit 1
 	;;
 esac
@@ -69,27 +59,15 @@ for g in $GRUPOS; do
 	esac
 done
 
-# pacotes: uma interface para pkg_add (OpenBSD) e pkg (FreeBSD)
+# pacotes: pkg_add, pkg_info e pkg_delete
 instalado() {
-	case "$SO" in
-	OpenBSD) pkg_info -e "${1%%--*}-[0-9]*" >/dev/null 2>&1 ;;
-	FreeBSD) case "$1" in
-	         */*) pkg info -O "$1" >/dev/null 2>&1 ;;
-	         *)   pkg info -e "$1" >/dev/null 2>&1 ;;
-	         esac ;;
-	esac
+	pkg_info -e "${1%%--*}-[0-9]*" >/dev/null 2>&1
 }
 instalar() {
-	case "$SO" in
-	OpenBSD) rodar doas pkg_add -I "$1" ;;
-	FreeBSD) rodar doas pkg install -y "$1" ;;
-	esac
+	rodar doas pkg_add -I "$1"
 }
 remover() {
-	case "$SO" in
-	OpenBSD) rodar doas pkg_delete "$1" ;;
-	FreeBSD) rodar doas pkg delete -y "$1" ;;
-	esac
+	rodar doas pkg_delete "$1"
 }
 
 rodar() {
@@ -102,7 +80,7 @@ rodar() {
 
 # 1. conferencias
 msg "Sistema: $SO"
-command -v doas >/dev/null || { aviso "doas nao encontrado. OpenBSD: /etc/doas.conf; FreeBSD: pkg install doas e /usr/local/etc/doas.conf."; exit 1; }
+command -v doas >/dev/null || { aviso "doas nao encontrado. Configure o /etc/doas.conf."; exit 1; }
 [ -f "$DWM_DIR/config.h" ] && [ -f "$REPO/st/config.h" ] || { aviso "Arvore incompleta: faltam dwm/ ou st/ ao lado do install.sh."; exit 1; }
 [ "$SIMULAR" -eq 1 ] && msg "Modo simulacao: nada sera alterado."
 
@@ -163,6 +141,5 @@ msg "Pronto."
 	aviso "i3lock nao encontrado no PATH: Alt+Shift+x e o bloqueio automatico nao vao funcionar."
 fc-list 2>/dev/null | grep -qi "cascadia code" || \
 	aviso "Fonte Cascadia Code nao encontrada: coloque os .ttf em ~/.fonts e rode fc-cache."
-[ "$SO" = FreeBSD ] && msg "FreeBSD: veja o FREEBSD.md (dbus, grupo video, bloqueio antes de suspender)."
 [ -d "$BACKUP" ] && msg "Arquivos antigos guardados em $BACKUP"
 msg "Saia da sessao atual e rode: startx"
