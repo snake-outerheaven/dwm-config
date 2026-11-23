@@ -47,10 +47,13 @@ INCS = -I${X11INC} -I${FREETYPEINC}
 LIBS = -L${X11LIB} -lX11 ${XINERAMALIBS} ${FREETYPELIBS} ${XCBLIBS} ${KVMLIB}
 
 # flags
-# FreeBSD: com _POSIX_C_SOURCE definido, os tipos BSD (u_int...) e o sysctl(3) somem dos headers;
-# o __BSD_VISIBLE os traz de volta (o _BSD_SOURCE so vale no OpenBSD e no glibc)
-BSDVIS_FreeBSD = -D__BSD_VISIBLE=1
-CPPFLAGS = -D_DEFAULT_SOURCE -D_BSD_SOURCE -D_POSIX_C_SOURCE=200809L ${BSDVIS_${OS}} -DVERSION=\"${VERSION}\" ${XINERAMAFLAGS}
+# FreeBSD: com _POSIX_C_SOURCE definido, os headers escondem o que o swallow precisa
+# (o sys/user.h usa o stack_t, que so aparece com as extensoes XSI e BSD). Sem a macro,
+# o FreeBSD mostra tudo, que e o padrao dele; os outros sistemas continuam com ela.
+POSIXFLAG_OpenBSD = -D_POSIX_C_SOURCE=200809L
+POSIXFLAG_Linux   = -D_POSIX_C_SOURCE=200809L
+POSIXFLAG_FreeBSD =
+CPPFLAGS = -D_DEFAULT_SOURCE -D_BSD_SOURCE ${POSIXFLAG_${OS}} -DVERSION=\"${VERSION}\" ${XINERAMAFLAGS}
 #CFLAGS   = -g -std=c99 -pedantic -Wall -O0 ${INCS} ${CPPFLAGS}
 CFLAGS   = -std=c99 -pedantic -Wall -Wno-deprecated-declarations -Os ${INCS} ${CPPFLAGS}
 LDFLAGS  = ${LIBS}

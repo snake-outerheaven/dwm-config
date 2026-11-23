@@ -46,6 +46,9 @@
 #include <sys/types.h>
 #include <sys/sysctl.h>
 #include <sys/user.h>
+/* o sys/param.h (puxado pelo sys/user.h) ja define MIN e MAX; o util.h define de novo */
+#undef MIN
+#undef MAX
 #endif /* __FreeBSD__ */
 #ifdef __OpenBSD__
 #include <sys/sysctl.h>

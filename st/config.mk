@@ -53,9 +53,11 @@ LIBS = -L$(X11LIB) -lm -lX11 -lutil -lXft ${SIXEL_LIBS} ${XRENDER} ${XCURSOR}\
        $(NETWMICON_LIBS)
 
 # flags
-# FreeBSD: o _XOPEN_SOURCE esconde as extensoes BSD dos headers; o __BSD_VISIBLE as traz de volta
-BSDVIS_FreeBSD = -D__BSD_VISIBLE=1
-STCPPFLAGS = -DVERSION=\"$(VERSION)\" -DICON=\"$(ICONPREFIX)/$(ICONNAME)\" -D_XOPEN_SOURCE=600 $(BSDVIS_$(OS))
+# FreeBSD: o _XOPEN_SOURCE esconde as extensoes BSD dos headers; sem ele, o FreeBSD mostra tudo
+XOPEN_OpenBSD = -D_XOPEN_SOURCE=600
+XOPEN_Linux   = -D_XOPEN_SOURCE=600
+XOPEN_FreeBSD =
+STCPPFLAGS = -DVERSION=\"$(VERSION)\" -DICON=\"$(ICONPREFIX)/$(ICONNAME)\" $(XOPEN_$(OS))
 STCFLAGS = $(INCS) $(STCPPFLAGS) $(CPPFLAGS) $(CFLAGS)
 STLDFLAGS = $(LIBS) $(LDFLAGS)
 
