@@ -98,6 +98,8 @@ make X11INC=/usr/include X11LIB=/usr/lib FREETYPEINC=/usr/include/freetype2 KVML
 | movestack | à mão | Move a janela para cima ou para baixo na pilha |
 | scratchpad | à mão | Um st flutuante que aparece e some com ``Alt+` `` |
 | autostart | à mão | O dwm sobe os programas da sessão (`autostart[]` no `config.h`) e os encerra ao sair |
+| systray | 6.3 (bakkeby), 3 hunks ajustados | Bandeja de ícones à direita da barra (CopyQ, qBittorrent...) |
+| cyclelayouts | 6.3 (bakkeby) | Uma tecla percorre os 14 layouts |
 
 Diffs de referência: coleção [bakkeby/patches](https://github.com/bakkeby/patches)
 (o site suckless.org tem as versões oficiais de cada um).
@@ -179,6 +181,7 @@ echo desktop | doas tee /etc/dwm-config/perfil    # ou troca à mão; vale no pr
 | `Alt+h` / `Alt+l` | Diminui / aumenta a área principal |
 | `Alt+Enter` | Manda a janela para a área principal |
 | `Alt+t` / `Alt+f` / `Alt+m` | Layout tile / flutuante / monocle |
+| `Alt+Ctrl+.` / `Alt+Ctrl+,` | Próximo / anterior dos 14 layouts (cyclelayouts) |
 | `Alt+y` | Tela cheia na janela atual |
 | `Alt+Super+0` / `Alt+Super+Shift+0` | Liga/desliga os gaps / volta ao padrão |
 | `Alt+Super+u` / `Alt+Super+Shift+u` | Aumenta / diminui todos os gaps |

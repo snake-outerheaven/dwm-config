@@ -12,8 +12,11 @@ Os diffs que transformam o código de origem nas árvores `dwm/` e `st/` deste r
 | `dwm/dwm-attachbottom-6.3.diff` | attachbottom original (1 hunk ajustado à mão) |
 | `dwm/dwm-swallow-6.3.diff` | swallow original (3 hunks ajustados à mão) |
 | `dwm/dwm-togglefullscreen-6.3.diff` | togglefullscreen original |
+| `dwm/dwm-systray-6.3.diff` | systray (versão do bakkeby/patches); 3 hunks de `dwm.c` refeitos à mão (protótipos e `destroynotify`, por causa do swallow) e as 4 opções no `config.h` |
+| `dwm/dwm-cyclelayouts-6.3.diff` | cyclelayouts (bakkeby/patches); teclas `Alt+Ctrl+,` e `Alt+Ctrl+.` no `config.h` |
 
 hide_vacant_tags, movestack, scratchpad e autostart foram escritos à mão; estão só no diff combinado.
+O diff combinado ainda **não** inclui systray e cyclelayouts: aplique os dois por cima dele.
 
 ```sh
 # reaplicar num dwm 6.4 limpo
