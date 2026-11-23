@@ -95,7 +95,7 @@ musica() {
 	if [ "${#m}" -gt "$MAX_MUSICA" ]; then
 		m="$(printf '%s' "$m" | cut -c1-$((MAX_MUSICA - 1)))~"
 	fi
-	printf 'mus %s | ' "$m"
+	printf '%s | ' "$m"
 }
 
 # --- aviso de bateria baixa (uma vez por nivel, ate voltar a carregar) -------

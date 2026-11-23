@@ -162,7 +162,7 @@ responder, o `cmus`.
 | Próxima / anterior | `midia proxima` / `midia anterior` |
 | Stop | `midia parar` |
 
-Enquanto algo toca, a barra mostra `mus artista - título` (até 40 letras) antes da cpu.
+Enquanto algo toca, a barra mostra `artista - título` (até 40 letras) antes da cpu.
 Para saber se o navegador aparece: com um vídeo tocando, `playerctl -l` deve listar `firefox`.
 
 ## Barra
