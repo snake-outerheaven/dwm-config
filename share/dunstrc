@@ -1,4 +1,4 @@
-# /usr/local/share/dwm-config/dunstrc - notificacoes em amarelo Tango, como o dwm
+# /usr/local/share/dwm-config/dunstrc - notificacoes em Gruvbox (amarelo #fabd2f), como o dwm
 # O dwm sobe o dunst com -config apontando para este arquivo.
 # Testar: notify-send "Titulo" "Texto"     Recarregar: pkill dunst (o proximo aviso sobe ele de novo)
 
@@ -27,26 +27,26 @@
     progress_bar_frame_width = 0
     progress_bar_min_width = 150
     progress_bar_max_width = 300
-    highlight = "#edd400"
+    highlight = "#fabd2f"
     mouse_left_click = close_current
     mouse_middle_click = do_action, close_current
     mouse_right_click = close_all
 
 [urgency_low]
-    background = "#2e3436"
-    foreground = "#babdb6"
-    frame_color = "#555753"
+    background = "#282828"
+    foreground = "#a89984"
+    frame_color = "#504945"
     timeout = 4
 
 [urgency_normal]
-    background = "#2e3436"
-    foreground = "#d3d7cf"
-    frame_color = "#edd400"
+    background = "#282828"
+    foreground = "#ebdbb2"
+    frame_color = "#fabd2f"
     timeout = 6
 
 [urgency_critical]
-    background = "#2e3436"
-    foreground = "#eeeeec"
-    frame_color = "#ef2929"
-    highlight = "#ef2929"
+    background = "#282828"
+    foreground = "#ebdbb2"
+    frame_color = "#fb4934"
+    highlight = "#fb4934"
     timeout = 0                # fica ate voce fechar

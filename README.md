@@ -1,6 +1,6 @@
 # dwm-config
 
-dwm 6.4 para OpenBSD, em amarelo Tango (`#edd400` sobre `#2e3436`),
+dwm 6.4 para OpenBSD, em Gruvbox dark (amarelo `#fabd2f` sobre `#282828`),
 fonte Cascadia Code e áreas de trabalho em algarismos romanos (I a IX).
 
 ![dwm-config no OpenBSD](docs/dwm.png)
@@ -121,7 +121,7 @@ O dmenu fica como vem. O st foi ajustado para lembrar o alacritty:
 | Modo vi (selecionar com o teclado) | `Ctrl+Shift+Espaço` ou `Ctrl+Shift+Esc` |
 | Busca | `Ctrl+Shift+f` / `Ctrl+Shift+b` |
 | Linhas e caixas desenhadas pelo st | Automático (boxdraw) |
-| Cores Tango (cursor amarelo `#edd400`) | Do `config.h` e de `/usr/local/share/dwm-config/Xresources`; um `~/.Xresources` seu, se existir, tem prioridade |
+| Cores Gruvbox dark (cursor amarelo `#fabd2f`) | Do `config.h` e de `/usr/local/share/dwm-config/Xresources`; um `~/.Xresources` seu, se existir, tem prioridade |
 
 Patches ligados em `st/patches.h`: reflow, scrollback (+ mouse), clipboard,
 keyboard_select, boxdraw, anysize e xresources. Para ligar ou desligar outro,
@@ -196,7 +196,7 @@ O que o **próprio dwm** sobe ao iniciar e encerra ao sair (`autostart[]` no `dw
 | Peça | Para quê |
 |---|---|
 | `dwm-status` | Barra: cpu, memória, volume, bateria e data; avisa a bateria em 15% e 5% |
-| `dunst -config /usr/local/share/dwm-config/dunstrc` | Notificações em amarelo Tango (print salvo, volume, brilho, bateria, programas) |
+| `dunst -config /usr/local/share/dwm-config/dunstrc` | Notificações em Gruvbox (print salvo, volume, brilho, bateria, programas) |
 | `copyq` | Histórico do clipboard (`Alt+v`) |
 | `xidle` (base) | Chama o `i3lock` após 5 min parado |
 
