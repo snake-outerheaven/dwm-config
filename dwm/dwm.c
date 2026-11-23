@@ -42,6 +42,11 @@
 #include <X11/Xft/Xft.h>
 #include <X11/Xlib-xcb.h>
 #include <xcb/res.h>
+#ifdef __FreeBSD__
+#include <sys/types.h>
+#include <sys/sysctl.h>
+#include <sys/user.h>
+#endif /* __FreeBSD__ */
 #ifdef __OpenBSD__
 #include <sys/sysctl.h>
 #include <kvm.h>
@@ -2365,7 +2370,7 @@ winpid(Window w)
 	if (result == (pid_t)-1)
 		result = 0;
 #endif /* __linux__ */
-#ifdef __OpenBSD__
+#if defined(__OpenBSD__) || defined(__FreeBSD__)
 	Atom type;
 	int format;
 	unsigned long len, bytes;
@@ -2378,7 +2383,7 @@ winpid(Window w)
 	ret = *(pid_t*)prop;
 	XFree(prop);
 	result = ret;
-#endif /* __OpenBSD__ */
+#endif /* __OpenBSD__ || __FreeBSD__ */
 
 	return result;
 }
@@ -2414,6 +2419,16 @@ getparentprocess(pid_t p)
 		v = kp->p_ppid;
 	kvm_close(kd);	/* sem isto, cada janela nova vazava um kvm_t */
 #endif /* __OpenBSD__ */
+
+#ifdef __FreeBSD__
+	/* kern.proc.pid.<p>: o kernel devolve a kinfo_proc do processo */
+	int mib[4] = { CTL_KERN, KERN_PROC, KERN_PROC_PID, (int)p };
+	struct kinfo_proc kp;
+	size_t len = sizeof(kp);
+
+	if (sysctl(mib, 4, &kp, &len, NULL, 0) == 0 && len == sizeof(kp))
+		v = kp.ki_ppid;
+#endif /* __FreeBSD__ */
 
 
 	return (pid_t)v;

@@ -111,8 +111,8 @@ static const char *const autostart[] = {
 	LIBEXEC "dwm-status", NULL,
 	"dunst", "-config", SHARE "dunstrc", NULL,
 	"copyq", NULL,
-	/* bloqueio apos 5 min parado; -no = sem canto de bloqueio; SIGUSR1 bloqueia na hora */
-	"xidle", "-no", "-timeout", "300", "-program", "/usr/local/bin/i3lock -c 2e3436", NULL,
+	/* bloqueio apos 5 min parado (o xidle e so do OpenBSD); "xautolock -locknow" bloqueia na hora */
+	"xautolock", "-time", "5", "-locker", "/usr/local/bin/i3lock -c 2e3436", NULL,
 	NULL
 };
 

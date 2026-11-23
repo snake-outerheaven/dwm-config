@@ -1,6 +1,6 @@
 #!/bin/sh
-# ~/.xinitrc - dwm amarelo Tango no OpenBSD (iniciar com: startx)
-# Os programas da sessao (barra, dunst, copyq, xidle) o proprio dwm sobe:
+# ~/.xinitrc - dwm amarelo Tango no FreeBSD (iniciar com: startx)
+# Os programas da sessao (barra, dunst, copyq, xautolock) o proprio dwm sobe:
 # veja autostart[] em ~/dwm-config/dwm/config.h. Nada aqui usa o seu ~/bin.
 
 # barramento D-Bus da sessao: o dunst e o copyq precisam dele

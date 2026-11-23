@@ -1,5 +1,5 @@
 #!/bin/sh
-# dwm-status - barra do dwm no OpenBSD: cpu, memoria, volume, bateria e data
+# dwm-status - barra do dwm no FreeBSD: cpu, memoria, volume, bateria e data
 # Tambem avisa (notify-send/dunst) quando a bateria fica baixa: 15% e 5%.
 # No perfil desktop (sem bateria, ver perfil-maquina) a bateria some da barra
 # e nenhum aviso de bateria e mandado.
@@ -13,26 +13,19 @@ INTERVALO=5
 PERFIL=$("$(dirname "$0")/perfil-maquina" 2>/dev/null || echo notebook)
 
 # --- bateria -----------------------------------------------------------------
-pct_bateria() {
-	pct=$(apm -l 2>/dev/null)
+pct_bateria() {	# hw.acpi.battery.life: carga em %, de todas as baterias
+	pct=$(sysctl -n hw.acpi.battery.life 2>/dev/null)
 	case "$pct" in ''|*[!0-9]*) pct= ;; esac
-	# apm sem resposta ou "desconhecido" (255): calcula pelos sensores ACPI
-	if [ -z "$pct" ] || [ "$pct" -gt 100 ]; then
-		cheio=$(sysctl -n hw.sensors.acpibat0.watthour0 2>/dev/null | cut -d' ' -f1)
-		resta=$(sysctl -n hw.sensors.acpibat0.watthour3 2>/dev/null | cut -d' ' -f1)
-		if [ -n "$cheio" ] && [ -n "$resta" ]; then
-			pct=$(echo "$resta $cheio" | awk '{ if ($2 > 0) printf "%d", $1 * 100 / $2 }')
-		fi
-	fi
+	[ -n "$pct" ] && [ "$pct" -gt 100 ] && pct=
 	printf '%s' "$pct"
 }
 
-na_tomada() {
-	[ "$(apm -a 2>/dev/null)" = 1 ]
+na_tomada() {	# hw.acpi.acline: 1 = na tomada
+	[ "$(sysctl -n hw.acpi.acline 2>/dev/null)" = 1 ]
 }
 
 # --- cpu: uso entre duas leituras do kern.cp_time ----------------------------
-# kern.cp_time = user,nice,sys,spin,intr,idle (contadores acumulados)
+# kern.cp_time no FreeBSD = user nice sys intr idle (o idle e sempre o ultimo)
 cp_time() {
 	sysctl -n kern.cp_time 2>/dev/null | tr ',' ' '
 }
@@ -48,30 +41,25 @@ cpu_pct() {	# $1 = leitura anterior, $2 = leitura atual
 }
 
 # --- memoria: ativa / total, em MB -------------------------------------------
-memoria() {
+memoria() {	# paginas ativas x tamanho da pagina (vm.stats do FreeBSD)
+	pag=$(sysctl -n hw.pagesize 2>/dev/null)
+	ativa=$(sysctl -n vm.stats.vm.v_active_count 2>/dev/null)
 	total=$(sysctl -n hw.physmem 2>/dev/null)
-	top -b -d1 2>/dev/null | awk '/^Memory:/ {
-		split($3, r, "/"); v = r[1] + 0; u = substr(r[1], length(r[1]))
-		if (u == "K") v = v / 1024; else if (u == "G") v = v * 1024
-		printf "%d", v
-	}' | {
-		read -r ativa
-		if [ -n "$ativa" ] && [ -n "$total" ]; then
-			printf 'mem %sM/%sM' "$ativa" "$((total / 1048576))"
-		else
-			printf 'mem ?'
-		fi
-	}
+	if [ -n "$pag" ] && [ -n "$ativa" ] && [ -n "$total" ]; then
+		printf 'mem %sM/%sM' "$((ativa * pag / 1048576))" "$((total / 1048576))"
+	else
+		printf 'mem ?'
+	fi
 }
 
 # --- volume -------------------------------------------------------------------
-# nivel em 0-1, mudo em 0/1
-nivel_volume() {
-	sndioctl -n output.level 2>/dev/null
+# mixer -o imprime "vol.volume=esq:dir" (0.00 a 1.00) e "vol.mute=0|1"
+nivel_volume() {	# 0-1, canal esquerdo
+	mixer -o vol.volume 2>/dev/null | awk -F= '{ split($2, c, ":"); print c[1] }'
 }
 
 mudo() {
-	[ "$(sndioctl -n output.mute 2>/dev/null)" = 1 ]
+	[ "$(mixer -o vol.mute 2>/dev/null | cut -d= -f2)" = 1 ]
 }
 
 volume() {

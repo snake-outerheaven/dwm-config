@@ -1,9 +1,11 @@
 # dwm-config
 
-dwm 6.4 para OpenBSD, em amarelo Tango (`#edd400` sobre `#2e3436`),
+dwm 6.4 para FreeBSD, em amarelo Tango (`#edd400` sobre `#2e3436`),
 fonte Cascadia Code e áreas de trabalho em algarismos romanos (I a IX).
 
-![dwm-config no OpenBSD](docs/dwm.png)
+![dwm-config](docs/dwm.png)
+
+> Branch `freebsd`. A versão para OpenBSD fica na `master`.
 
 ## Conteúdo
 
@@ -15,7 +17,6 @@ fonte Cascadia Code e áreas de trabalho em algarismos romanos (I a IX).
 | `x11/` | Pacote do stow: só `.xinitrc` e `.xsession`. São os únicos arquivos que o setup põe no `$HOME` |
 | `scripts/` | `dwm-status`, `printar`, `midia`, `perfil-maquina`. Instalados em `/usr/local/libexec/dwm-config/`, **nunca** no seu `~/bin` |
 | `share/` | `Xresources` e `dunstrc`, instalados em `/usr/local/share/dwm-config/` |
-| `sistema/openbsd/` | Arquivo de sistema para bloquear a tela antes de suspender. Fora do stow: instalar como root |
 | `patches/` | Os diffs aplicados no dwm e no st, para reaplicar numa árvore limpa |
 | `CORES.md` | Guia de todas as cores, para mexer sozinho |
 | `dwm/movestack.c`, `dwm/vanitygaps.c` | Código trazido pelos patches |
@@ -54,32 +55,32 @@ GRUPOS="" sh install.sh            # nenhum (o LibreOffice é pesado)
 À mão:
 
 ```sh
-doas pkg_delete dwm                  # se o dwm do pacote estiver instalado
-cd dwm && make && doas make install
-doas pkg_delete st                   # se o st do pacote estiver instalado
-cd ../st && make && doas make install
+sudo pkg delete -y dwm               # se o dwm do pacote estiver instalado
+cd dwm && make && sudo make install
+sudo pkg delete -y st                # se o st do pacote estiver instalado
+cd ../st && make && sudo make install
 cd ..
-doas install -d /usr/local/libexec/dwm-config /usr/local/share/dwm-config /etc/dwm-config
-doas install -m 755 scripts/* /usr/local/libexec/dwm-config/
-doas install -m 644 share/* /usr/local/share/dwm-config/
+sudo install -d /usr/local/libexec/dwm-config /usr/local/share/dwm-config /etc/dwm-config
+sudo install -m 755 scripts/* /usr/local/libexec/dwm-config/
+sudo install -m 644 share/* /usr/local/share/dwm-config/
 stow --no-folding x11                # só ~/.xinitrc e ~/.xsession
 startx
 ```
 
-O `config.mk` já usa os caminhos do OpenBSD (`${X11INC}/freetype2`).
+O `config.mk` detecta o sistema pelo `uname -s`: no FreeBSD, o X e o freetype ficam em `/usr/local` (`/usr/local/include/freetype2`). O `install.sh` usa o `doas` se ele estiver configurado, senão o `sudo`.
 
 ### make do BSD ou GNU make
 
 Os `Makefile` de `dwm/` e `st/` usam só sintaxe POSIX (`.POSIX:`), então
-funcionam com o `make(1)` do OpenBSD e com o `gmake`. Testado com GNU make e
+funcionam com o `make(1)` dos BSDs (o bmake) e com o `gmake`. Testado com GNU make e
 bmake: `all`, `install`, `clean` e `dist`.
 
 ```sh
-make && doas make install          # make do OpenBSD
-gmake && doas gmake install        # GNU make
+make && sudo make install          # make do FreeBSD
+gmake && sudo gmake install        # GNU make
 ```
 
-Fora do OpenBSD, troque os caminhos na linha de comando (vale para os dois):
+Em outro sistema, troque os caminhos na linha de comando (vale para os dois):
 
 ```sh
 make X11INC=/usr/include X11LIB=/usr/lib FREETYPEINC=/usr/include/freetype2 KVMLIB=
@@ -102,8 +103,9 @@ make X11INC=/usr/include X11LIB=/usr/lib FREETYPEINC=/usr/include/freetype2 KVML
 Diffs de referência: coleção [bakkeby/patches](https://github.com/bakkeby/patches)
 (o site suckless.org tem as versões oficiais de cada um).
 
-O swallow no OpenBSD usa `kvm_getprocs(3)` para achar o processo pai, por isso o
-`config.mk` liga `-lkvm` e as bibliotecas `xcb`/`xcb-res` (todas no base do X).
+O swallow acha o PID da janela pela propriedade `_NET_WM_PID` e o processo pai pelo
+`sysctl(3)` (`kern.proc.pid`, campo `ki_ppid`), sem biblioteca extra. No OpenBSD o
+mesmo trecho usa o `kvm_getprocs(3)`.
 Para desligar o swallow numa janela, use `noswallow = 1` na regra dela.
 
 ## st (terminal)
@@ -125,7 +127,7 @@ O dmenu fica como vem. O st foi ajustado para lembrar o alacritty:
 
 Patches ligados em `st/patches.h`: reflow, scrollback (+ mouse), clipboard,
 keyboard_select, boxdraw, anysize e xresources. Para ligar ou desligar outro,
-mude o `0`/`1` lá e recompile (`cd st && make && doas make install`).
+mude o `0`/`1` lá e recompile (`cd st && make && sudo make install`).
 
 ## Wallpaper
 
@@ -140,7 +142,7 @@ Sem `~/.fehbg`, fica o fundo sólido `#2e3436`.
 ## Barra
 
 O `dwm-status` (em `/usr/local/libexec/dwm-config/`) escreve na barra a cada 5 s: cpu (`kern.cp_time`), memória ativa
-(`top`), volume (`sndioctl`), bateria (`apm`, ou os sensores ACPI) e data.
+(`vm.stats.vm.v_active_count`), volume (`mixer -o`), bateria (`hw.acpi.battery.life` e `hw.acpi.acline`) e data.
 O dwm sobe o script sozinho (autostart) e o encerra ao sair.
 
 ```sh
@@ -150,7 +152,7 @@ O dwm sobe o script sozinho (autostart) e o encerra ao sair.
 ### Notebook ou desktop
 
 O mesmo setup serve para os dois. O `install.sh` detecta se a máquina tem bateria
-(sensor `acpibat0` ou `apm -b`) e grava o perfil em `/etc/dwm-config/perfil`:
+(`hw.acpi.battery.units` e carga de 1 a 100%) e grava o perfil em `/etc/dwm-config/perfil`:
 
 | Perfil | Barra | Avisos de bateria |
 |---|---|---|
@@ -161,7 +163,7 @@ O mesmo setup serve para os dois. O `install.sh` detecta se a máquina tem bater
 /usr/local/libexec/dwm-config/perfil-maquina      # mostra o perfil em uso
 /usr/local/libexec/dwm-config/perfil-maquina -d   # mostra só o que o hardware indica
 PERFIL=desktop sh install.sh      # força o perfil na instalação
-echo desktop | doas tee /etc/dwm-config/perfil    # ou troca à mão; vale no próximo startx
+echo desktop | sudo tee /etc/dwm-config/perfil    # ou troca à mão; vale no próximo startx
 ```
 
 ## Atalhos (Mod = Alt)
@@ -185,7 +187,7 @@ echo desktop | doas tee /etc/dwm-config/perfil    # ou troca à mão; vale no pr
 | `Alt+1..9` / `Alt+Shift+1..9` | Ir para a área / mandar janela |
 | `Print` / `Alt+Print` | Print da tela / de uma área, em `~/Downloads` |
 | `Alt+Shift+x` | Bloqueia a tela (`i3lock`) |
-| Teclas de volume / brilho | Muda e mostra o valor novo no dunst |
+| Teclas de volume / brilho | `mixer` / `backlight`, com o valor novo no dunst |
 | `Alt+Shift+c` | Fecha a janela |
 | `Alt+Shift+q` | Sai do dwm |
 
@@ -198,15 +200,10 @@ O que o **próprio dwm** sobe ao iniciar e encerra ao sair (`autostart[]` no `dw
 | `dwm-status` | Barra: cpu, memória, volume, bateria e data; avisa a bateria em 15% e 5% |
 | `dunst -config /usr/local/share/dwm-config/dunstrc` | Notificações em amarelo Tango (print salvo, volume, brilho, bateria, programas) |
 | `copyq` | Histórico do clipboard (`Alt+v`) |
-| `xidle` (base) | Chama o `i3lock` após 5 min parado |
+| `xautolock` (pacote) | Chama o `i3lock` após 5 min parado (`xautolock -locknow` bloqueia na hora) |
 
-Bloquear antes de suspender (tampa ou `zzz`), como root:
-
-```sh
-install -o root -g wheel -m 755 ~/dwm-config/sistema/openbsd/etc/apm/suspend /etc/apm/suspend
-ln -sf suspend /etc/apm/hibernate
-rcctl enable apmd && rcctl start apmd
-```
+Bloquear antes de suspender (tampa ou `zzz`) ainda não está automatizado no FreeBSD.
+Por enquanto: `xautolock -locknow && sleep 1 && zzz`.
 
 Regras de janela: nenhuma por programa. Só o `st` é marcado como terminal (o swallow precisa).
 
@@ -216,11 +213,11 @@ O dwm não tem arquivo de configuração em tempo de execução: edite `dwm/conf
 e recompile.
 
 ```sh
-cd ~/dwm-config/dwm && make && doas make install
+cd ~/dwm-config/dwm && make && sudo make install
 ```
 
 Saia do dwm (`Alt+Shift+q`) e rode `startx` de novo. As cores estão explicadas em `CORES.md`.
 
 ## Referências
 
-`dwm(1)`, `dmenu(1)`, `st(1)`, `xsetroot(1)`, `sndioctl(1)`, `apm(8)`, `stow(8)`.
+`dwm(1)`, `dmenu(1)`, `st(1)`, `xsetroot(1)`, `mixer(8)`, `backlight(8)`, `acpi_battery(4)`, `stow(8)`.

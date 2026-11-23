@@ -1,5 +1,5 @@
 #!/bin/sh
-# install.sh - instala o ambiente dwm amarelo Tango no OpenBSD
+# install.sh - instala o ambiente dwm amarelo Tango no FreeBSD
 #
 # Uso (na raiz do repositorio):
 #   sh install.sh            instala pacotes, compila dwm e st e aplica os dotfiles
@@ -37,18 +37,18 @@ SO=$(uname -s)
 # pacotes: essenciais (o ambiente nao sobe sem eles) e opcionais (falha vira aviso).
 # O st vem compilado da pasta st/ do repositorio (scrollback, reflow, modo vi).
 case "$SO" in
-OpenBSD)
-	# i3lock e essencial: Alt+Shift+x e o bloqueio por inatividade (xidle) dependem dele
+FreeBSD)
+	# i3lock e essencial: Alt+Shift+x e o bloqueio por inatividade (xautolock) dependem dele
 	ESSENCIAIS="dmenu stow i3lock"
-	OPCIONAIS="git vim--no_x11 fastfetch cascadia-code feh scrot xdg-user-dirs dbus dunst libnotify copyq ranger firefox"
-	# nomes conferidos no openports.pl
-	G_ESCRITORIO="libreoffice libreoffice-i18n-pt-br zathura zathura-pdf-mupdf"
+	OPCIONAIS="git vim fastfetch cascadia-code feh scrot xdg-user-dirs dbus dunst libnotify copyq py311-ranger firefox xautolock"
+	# nomes a conferir com "pkg search": no FreeBSD alguns levam prefixo (pt_BR-, py311-)
+	G_ESCRITORIO="libreoffice pt_BR-libreoffice zathura zathura-pdf-mupdf"
 	G_MIDIA="mpv"
 	# clangd, clang-tidy e clang-format para estudar C (o cc da base ja e o clang)
-	G_DEV="clang-tools-extra"
+	G_DEV="llvm"
 	;;
 *)
-	printf '\033[31m!!\033[0m %s\n' "Sistema nao suportado: $SO (este setup e so para OpenBSD)."
+	printf '\033[31m!!\033[0m %s\n' "Sistema nao suportado: $SO (esta branch e para FreeBSD)."
 	exit 1
 	;;
 esac
@@ -71,15 +71,22 @@ for g in $GRUPOS; do
 	esac
 done
 
-# pacotes: pkg_add, pkg_info e pkg_delete
+# root: doas se estiver configurado, senao sudo
+if command -v doas >/dev/null && [ -f /usr/local/etc/doas.conf ]; then
+	SU=doas
+else
+	SU=sudo
+fi
+
+# pacotes: pkg(8)
 instalado() {
-	pkg_info -e "${1%%--*}-[0-9]*" >/dev/null 2>&1
+	pkg info -e "$1" >/dev/null 2>&1
 }
 instalar() {
-	rodar doas pkg_add -I "$1"
+	rodar $SU pkg install -y "$1"
 }
 remover() {
-	rodar doas pkg_delete "$1"
+	rodar $SU pkg delete -y "$1"
 }
 
 rodar() {
@@ -92,7 +99,8 @@ rodar() {
 
 # 1. conferencias
 msg "Sistema: $SO"
-command -v doas >/dev/null || { aviso "doas nao encontrado. Configure o /etc/doas.conf."; exit 1; }
+command -v "$SU" >/dev/null || { aviso "Nem doas nem sudo encontrados. Instale e configure um deles."; exit 1; }
+msg "Root via: $SU"
 [ -f "$DWM_DIR/config.h" ] && [ -f "$REPO/st/config.h" ] || { aviso "Arvore incompleta: faltam dwm/ ou st/ ao lado do install.sh."; exit 1; }
 [ "$SIMULAR" -eq 1 ] && msg "Modo simulacao: nada sera alterado."
 
@@ -118,7 +126,7 @@ done
 # 3. compilar e instalar o dwm
 msg "Compilando o dwm"
 ( cd "$DWM_DIR" && rodar make clean && rodar make ) || { aviso "Falha ao compilar o dwm."; exit 1; }
-rodar doas make -C "$DWM_DIR" install || { aviso "Falha ao instalar o dwm."; exit 1; }
+rodar $SU make -C "$DWM_DIR" install || { aviso "Falha ao instalar o dwm."; exit 1; }
 
 # 3b. compilar e instalar o st do repositorio
 ST_DIR="$REPO/st"
@@ -128,7 +136,7 @@ if instalado st; then
 fi
 msg "Compilando o st"
 ( cd "$ST_DIR" && rodar make clean && rodar make ) || { aviso "Falha ao compilar o st."; exit 1; }
-rodar doas make -C "$ST_DIR" install || { aviso "Falha ao instalar o st."; exit 1; }
+rodar $SU make -C "$ST_DIR" install || { aviso "Falha ao instalar o st."; exit 1; }
 
 # 4. dotfiles com stow (com backup do que atrapalhar)
 msg "Aplicando dotfiles: $STOW_PACOTES"
@@ -150,12 +158,12 @@ done
 LIBEXEC=/usr/local/libexec/dwm-config
 SHARE=/usr/local/share/dwm-config
 msg "Instalando scripts em $LIBEXEC e arquivos em $SHARE"
-rodar doas install -d -m 755 "$LIBEXEC" "$SHARE" /etc/dwm-config || { aviso "Falha ao criar as pastas do sistema."; exit 1; }
+rodar $SU install -d -m 755 "$LIBEXEC" "$SHARE" /etc/dwm-config || { aviso "Falha ao criar as pastas do sistema."; exit 1; }
 for f in "$REPO"/scripts/*; do
-	rodar doas install -m 755 "$f" "$LIBEXEC/" || { aviso "Falha ao instalar $f"; exit 1; }
+	rodar $SU install -m 755 "$f" "$LIBEXEC/" || { aviso "Falha ao instalar $f"; exit 1; }
 done
 for f in "$REPO"/share/*; do
-	rodar doas install -m 644 "$f" "$SHARE/" || { aviso "Falha ao instalar $f"; exit 1; }
+	rodar $SU install -m 644 "$f" "$SHARE/" || { aviso "Falha ao instalar $f"; exit 1; }
 done
 
 # 4c. perfil da maquina: notebook (com bateria) ou desktop
@@ -170,7 +178,7 @@ msg "Perfil da maquina: $PERFIL_FINAL (detectado: $PERFIL_DETECTADO)"
 if [ "$SIMULAR" -eq 1 ]; then
 	printf '    [simulado] gravar "%s" em /etc/dwm-config/perfil\n' "$PERFIL_FINAL"
 else
-	echo "$PERFIL_FINAL" | doas tee /etc/dwm-config/perfil >/dev/null
+	echo "$PERFIL_FINAL" | $SU tee /etc/dwm-config/perfil >/dev/null
 fi
 
 # 4d. limpar o que versoes antigas deste repositorio deixaram no $HOME
