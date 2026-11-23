@@ -1,6 +1,6 @@
 # dwm-config
 
-dwm 6.4 para FreeBSD, em amarelo Tango (`#edd400` sobre `#2e3436`),
+dwm 6.4 para FreeBSD, em Gruvbox com destaque vermelho (`#cc241d` sobre `#282828`),
 fonte Cascadia Code e áreas de trabalho em algarismos romanos (I a IX).
 
 ![dwm-config](docs/dwm.png)
@@ -123,7 +123,7 @@ O dmenu fica como vem. O st foi ajustado para lembrar o alacritty:
 | Modo vi (selecionar com o teclado) | `Ctrl+Shift+Espaço` ou `Ctrl+Shift+Esc` |
 | Busca | `Ctrl+Shift+f` / `Ctrl+Shift+b` |
 | Linhas e caixas desenhadas pelo st | Automático (boxdraw) |
-| Cores Tango (cursor amarelo `#edd400`) | Do `config.h` e de `/usr/local/share/dwm-config/Xresources`; um `~/.Xresources` seu, se existir, tem prioridade |
+| Cores Gruvbox (cursor vermelho `#cc241d`) | Do `config.h` e de `/usr/local/share/dwm-config/Xresources`; um `~/.Xresources` seu, se existir, tem prioridade |
 
 Patches ligados em `st/patches.h`: reflow, scrollback (+ mouse), clipboard,
 keyboard_select, boxdraw, anysize e xresources. Para ligar ou desligar outro,
@@ -137,7 +137,7 @@ O `.xinitrc` roda o `~/.fehbg` a cada sessão. Para escolher a imagem:
 feh --bg-fill ~/flores.jpg    # mostra agora e grava o ~/.fehbg
 ```
 
-Sem `~/.fehbg`, fica o fundo sólido `#2e3436`.
+Sem `~/.fehbg`, fica o fundo sólido `#282828`.
 
 ## Barra
 
@@ -198,7 +198,7 @@ O que o **próprio dwm** sobe ao iniciar e encerra ao sair (`autostart[]` no `dw
 | Peça | Para quê |
 |---|---|
 | `dwm-status` | Barra: cpu, memória, volume, bateria e data; avisa a bateria em 15% e 5% |
-| `dunst -config /usr/local/share/dwm-config/dunstrc` | Notificações em amarelo Tango (print salvo, volume, brilho, bateria, programas) |
+| `dunst -config /usr/local/share/dwm-config/dunstrc` | Notificações em Gruvbox, com moldura vermelha (print salvo, volume, brilho, bateria, programas) |
 | `copyq` | Histórico do clipboard (`Alt+v`) |
 | `xautolock` (pacote) | Chama o `i3lock` após 5 min parado (`xautolock -locknow` bloqueia na hora) |
 

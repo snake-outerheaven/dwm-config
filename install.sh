@@ -1,5 +1,5 @@
 #!/bin/sh
-# install.sh - instala o ambiente dwm amarelo Tango no FreeBSD
+# install.sh - instala o ambiente dwm Gruvbox vermelho no FreeBSD
 #
 # Uso (na raiz do repositorio):
 #   sh install.sh            instala pacotes, compila dwm e st e aplica os dotfiles

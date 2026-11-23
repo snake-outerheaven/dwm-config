@@ -1,26 +1,26 @@
-# Cores: amarelo Tango
+# Cores: Gruvbox com destaque vermelho
 
-O dwm usa a paleta **Tango**: amarelo Butter sobre Aluminium escuro, o mesmo visual do rice com cwm.
+O dwm usa a paleta **Gruvbox escura**, com o vermelho como destaque: combina com o vermelho do FreeBSD.
 
-## A paleta Tango (o que o dwm usa)
+## A paleta (o que o dwm usa)
 
-| Nome Tango | Hex | Uso no dwm |
+| Nome Gruvbox | Hex | Uso no dwm |
 |---|---|---|
-| Butter 2 | `#edd400` | **Destaque**: tag ativa, título e borda da janela com foco |
-| Butter 1 | `#fce94f` | Destaque mais claro (alternativa) |
-| Butter 3 | `#c4a000` | Destaque mais escuro (alternativa) |
-| Aluminium 6 | `#2e3436` | Fundo da barra, texto sobre o destaque, fundo da tela |
-| Aluminium 5 | `#555753` | Borda das janelas sem foco |
-| Aluminium 2 | `#d3d7cf` | Texto da barra |
+| red | `#cc241d` | **Destaque**: tag ativa, título e borda da janela com foco |
+| bright red | `#fb4934` | Destaque mais claro (alternativa) |
+| bg0 | `#282828` | Fundo da barra e da tela |
+| bg2 | `#504945` | Borda das janelas sem foco |
+| fg | `#ebdbb2` | Texto da barra |
+| fg0 | `#fbf1c7` | Texto sobre o destaque vermelho |
 
 ## dwm: `dwm/config.h`
 
 ```c
-static const char col_gray1[] = "#2e3436"; /* fundo da barra          */
-static const char col_gray2[] = "#555753"; /* borda da janela inativa */
-static const char col_gray3[] = "#d3d7cf"; /* texto da barra          */
-static const char col_gray4[] = "#2e3436"; /* texto sobre o destaque  */
-static const char col_cyan[]  = "#edd400"; /* destaque: amarelo Tango */
+static const char col_gray1[] = "#282828"; /* fundo da barra          */
+static const char col_gray2[] = "#504945"; /* borda da janela inativa */
+static const char col_gray3[] = "#ebdbb2"; /* texto da barra          */
+static const char col_gray4[] = "#fbf1c7"; /* texto sobre o destaque  */
+static const char col_cyan[]  = "#cc241d"; /* destaque: vermelho      */
 ```
 
 Os nomes (`col_gray1`, `col_cyan`) vêm do dwm original. O nome não importa, o valor sim.
@@ -33,51 +33,52 @@ Os nomes (`col_gray1`, `col_cyan`) vêm do dwm original. O nome não importa, o 
 | `col_gray4` | Texto da tag ativa e do título |
 | `col_cyan` | Fundo da tag ativa, do título e borda da janela com foco |
 
-O **dmenu** (pacote) recebe essas mesmas cores pelo `dmenucmd` do `config.h`, então abre em amarelo Tango pelo `Alt+p`.
+O **dmenu** (pacote) recebe essas mesmas cores pelo `dmenucmd` do `config.h`, então abre com a seleção em vermelho pelo `Alt+p`.
 
 Depois de mudar:
 
 ```sh
-cd ~/dwm-config/dwm && make && doas make install
+cd ~/dwm-config/dwm && make && sudo make install
 ```
 
 Saia do dwm (`Alt+Shift+q`) e rode `startx` de novo.
 
-### Trocas rápidas de destaque
+### Trocas rápidas de destaque (todas da Gruvbox)
 
 | Quer o destaque em | `col_cyan` |
 |---|---|
-| Amarelo Tango (atual) | `#edd400` |
-| Amarelo claro | `#fce94f` |
-| Amarelo escuro | `#c4a000` |
-| Laranja Tango | `#f57900` |
-| Azul Tango | `#3465a4` |
-| Verde Tango | `#73d216` |
+| Vermelho (atual) | `#cc241d` |
+| Vermelho claro | `#fb4934` |
+| Laranja | `#d65d0e` |
+| Amarelo | `#d79921` |
+| Verde | `#98971a` |
+| Azul | `#458588` |
+| Aqua | `#689d6a` |
 
 ## Fundo da tela: `x11/.xinitrc`
 
 ```sh
-xsetroot -solid "#2e3436"     # aparece se não houver ~/.fehbg
+xsetroot -solid "#282828"     # aparece se não houver ~/.fehbg
 [ -f ~/.fehbg ] && sh ~/.fehbg
 ```
 
-## Terminal: `st` e `x11/.Xresources`
+## Terminal: `st` e `share/Xresources`
 
-O terminal usa a paleta Tango completa: fundo `#2e3436`, texto `#d3d7cf`, cursor `#edd400`.
+O terminal usa a Gruvbox completa: fundo `#282828`, texto `#ebdbb2`, cursor `#cc241d`.
 
 | Cor | Normal (0-7) | Clara (8-15) |
 |---|---|---|
-| Preto / cinza | `#2e3436` | `#555753` |
-| Vermelho | `#cc0000` | `#ef2929` |
-| Verde | `#4e9a06` | `#8ae234` |
-| Amarelo | `#c4a000` | `#fce94f` |
-| Azul | `#3465a4` | `#729fcf` |
-| Roxo | `#75507b` | `#ad7fa8` |
-| Ciano | `#06989a` | `#34e2e2` |
-| Branco | `#d3d7cf` | `#eeeeec` |
+| Preto / cinza | `#282828` | `#928374` |
+| Vermelho | `#cc241d` | `#fb4934` |
+| Verde | `#98971a` | `#b8bb26` |
+| Amarelo | `#d79921` | `#fabd2f` |
+| Azul | `#458588` | `#83a598` |
+| Roxo | `#b16286` | `#d3869b` |
+| Aqua | `#689d6a` | `#8ec07c` |
+| Branco | `#a89984` | `#fbf1c7` |
 
-As mesmas cores estão no `st/config.h` (padrão) e no `.Xresources` (prioridade, pelo patch xresources).
-Para ajustar sem recompilar o st, mude o `.Xresources`:
+As mesmas cores estão no `st/config.h` (padrão) e no `Xresources` (prioridade, pelo patch xresources).
+Para ajustar sem recompilar o st, mude o `~/.Xresources`:
 
 ```sh
 xrdb -merge ~/.Xresources     # vale para os terminais abertos depois
@@ -86,5 +87,5 @@ xrdb -merge ~/.Xresources     # vale para os terminais abertos depois
 ## Testar uma cor antes
 
 ```sh
-printf '\033[48;2;237;212;0m        \033[0m\n'   # mostra #edd400 (237,212,0 em decimal)
+printf '\033[48;2;204;36;29m        \033[0m\n'   # mostra #cc241d (204,36,29 em decimal)
 ```

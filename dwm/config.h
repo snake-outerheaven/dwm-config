@@ -15,11 +15,11 @@ static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const char *fonts[]          = { "Cascadia Code:size=11" };
 static const char dmenufont[]       = "Cascadia Code:size=11";
-static const char col_gray1[]       = "#2e3436";
-static const char col_gray2[]       = "#555753";
-static const char col_gray3[]       = "#d3d7cf";
-static const char col_gray4[]       = "#2e3436";
-static const char col_cyan[]        = "#edd400";
+static const char col_gray1[]       = "#282828";
+static const char col_gray2[]       = "#504945";
+static const char col_gray3[]       = "#ebdbb2";
+static const char col_gray4[]       = "#fbf1c7";
+static const char col_cyan[]        = "#cc241d";
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
 	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
@@ -97,7 +97,7 @@ static const char *clipcmd[]    = { "copyq", "toggle", NULL };
 /* print, bloqueio, volume e brilho */
 static const char *printcmd[]  = { LIBEXEC "printar", NULL };
 static const char *printacmd[] = { LIBEXEC "printar", "-s", NULL };
-static const char *lockcmd[]   = { "/usr/local/bin/i3lock", "-c", "2e3436", NULL };
+static const char *lockcmd[]   = { "/usr/local/bin/i3lock", "-c", "282828", NULL };
 static const char *volup[]     = { LIBEXEC "midia", "vol+", NULL };
 static const char *voldown[]   = { LIBEXEC "midia", "vol-", NULL };
 static const char *volmute[]   = { LIBEXEC "midia", "mudo", NULL };
@@ -112,7 +112,7 @@ static const char *const autostart[] = {
 	"dunst", "-config", SHARE "dunstrc", NULL,
 	"copyq", NULL,
 	/* bloqueio apos 5 min parado (o xidle e so do OpenBSD); "xautolock -locknow" bloqueia na hora */
-	"xautolock", "-time", "5", "-locker", "/usr/local/bin/i3lock -c 2e3436", NULL,
+	"xautolock", "-time", "5", "-locker", "/usr/local/bin/i3lock -c 282828", NULL,
 	NULL
 };
 

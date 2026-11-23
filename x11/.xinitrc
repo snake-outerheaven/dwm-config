@@ -1,5 +1,5 @@
 #!/bin/sh
-# ~/.xinitrc - dwm amarelo Tango no FreeBSD (iniciar com: startx)
+# ~/.xinitrc - dwm Gruvbox vermelho no FreeBSD (iniciar com: startx)
 # Os programas da sessao (barra, dunst, copyq, xautolock) o proprio dwm sobe:
 # veja autostart[] em ~/dwm-config/dwm/config.h. Nada aqui usa o seu ~/bin.
 
@@ -12,8 +12,8 @@ fi
 xrdb -merge /usr/local/share/dwm-config/Xresources
 [ -f ~/.Xresources ] && xrdb -merge ~/.Xresources
 
-# fundo solido Tango; se voce criou um wallpaper com o feh, ele vence
-xsetroot -solid "#2e3436"
+# fundo solido Gruvbox (bg0); se voce criou um wallpaper com o feh, ele vence
+xsetroot -solid "#282828"
 [ -f ~/.fehbg ] && sh ~/.fehbg
 
 exec dwm
