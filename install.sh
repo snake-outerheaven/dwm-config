@@ -41,7 +41,7 @@ FreeBSD)
 	# i3lock e essencial: Alt+Shift+x e o bloqueio por inatividade (xautolock) dependem dele
 	# pkgconf, freetype2, libXft, libXinerama e libxcb: para compilar o dwm e o st (o st acha o freetype pelo pkg-config)
 	ESSENCIAIS="pkgconf freetype2 libXft libXinerama libxcb dmenu stow i3lock"
-	OPCIONAIS="git vim fastfetch cascadia-code feh scrot xdg-user-dirs dbus dunst libnotify copyq py311-ranger firefox xautolock"
+	OPCIONAIS="git vim fastfetch cascadia-code feh scrot xdg-user-dirs dbus dunst libnotify copyq py312-ranger firefox xautolock"
 	# nomes a conferir com "pkg search": no FreeBSD alguns levam prefixo (pt_BR-, py311-)
 	G_ESCRITORIO="libreoffice pt_BR-libreoffice zathura zathura-pdf-mupdf"
 	G_MIDIA="mpv"
