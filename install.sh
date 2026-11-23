@@ -18,7 +18,7 @@
 # O que vai para onde:
 #   /usr/local/bin/dwm, /usr/local/bin/st          compilados do repositorio
 #   /usr/local/libexec/dwm-config/                 scripts (barra, print, midia, perfil)
-#   /usr/local/share/dwm-config/                   Xresources e dunstrc
+#   /usr/local/share/dwm-config/                   Xresources, dunstrc e fundo.jpg (foto de fundo)
 #   /etc/dwm-config/perfil                         desktop ou notebook
 #   ~/.xinitrc e ~/.xsession                       unicos arquivos no $HOME (stow)
 # O seu ~/bin nunca e tocado. Arquivos que atrapalham o stow vao para ~/.dotfiles-backup-DATA.
@@ -44,7 +44,8 @@ OpenBSD)
 	# nomes conferidos no openports.pl
 	G_ESCRITORIO="libreoffice libreoffice-i18n-pt-br zathura zathura-pdf-mupdf"
 	G_MIDIA="mpv"
-	G_DEV="avr-binutils avr-gcc avr-libc avrdude"
+	# clangd, clang-tidy e clang-format para estudar C (o cc da base ja e o clang)
+	G_DEV="clang-tools-extra"
 	;;
 *)
 	printf '\033[31m!!\033[0m %s\n' "Sistema nao suportado: $SO (este setup e so para OpenBSD)."

@@ -44,7 +44,7 @@ Além dos opcionais acima, o `install.sh` instala três grupos. Todos vêm ligad
 |---|---|
 | `escritorio` | `libreoffice`, `libreoffice-i18n-pt-br`, `zathura`, `zathura-pdf-mupdf` |
 | `midia` | `mpv` |
-| `dev` | `avr-binutils`, `avr-gcc`, `avr-libc`, `avrdude` |
+| `dev` | `clang-tools-extra` (`clangd`, `clang-tidy`, `clang-format`) |
 
 ```sh
 GRUPOS="dev midia" sh install.sh   # só esses dois grupos
