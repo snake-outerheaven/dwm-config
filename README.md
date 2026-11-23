@@ -135,7 +135,7 @@ O `.xinitrc` roda o `~/.fehbg` a cada sessão. Para escolher a imagem:
 feh --bg-fill ~/flores.jpg    # mostra agora e grava o ~/.fehbg
 ```
 
-Sem `~/.fehbg`, fica o fundo sólido `#2e3436`.
+Sem `~/.fehbg`, fica o fundo sólido `#282828`.
 
 ## Barra
 
