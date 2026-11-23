@@ -44,8 +44,8 @@ FreeBSD)
 	OPCIONAIS="git vim fastfetch cascadia-code feh scrot xdg-user-dirs dbus dunst libnotify copyq py312-ranger firefox xautolock"
 	# nomes a conferir com "pkg search": no FreeBSD alguns levam prefixo (pt_BR-, py311-)
 	G_ESCRITORIO="libreoffice pt_BR-libreoffice zathura zathura-pdf-mupdf"
-	# multimidia no terminal: cmus (musica), mpv (video), yt-dlp, mixertui (mixer do OSS) e ffmpeg
-	G_MIDIA="mpv cmus yt-dlp mixertui ffmpeg"
+	# multimidia: cmus (musica), playerctl (controla navegador e outros players), mpv, yt-dlp, mixertui e ffmpeg
+	G_MIDIA="mpv cmus playerctl yt-dlp mixertui ffmpeg"
 	# clangd, clang-tidy e clang-format para estudar C (o cc da base ja e o clang)
 	G_DEV="llvm"
 	;;

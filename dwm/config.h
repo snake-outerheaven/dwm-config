@@ -104,12 +104,13 @@ static const char *volmute[]   = { LIBEXEC "midia", "mudo", NULL };
 static const char *luzup[]     = { LIBEXEC "midia", "luz+", NULL };
 static const char *luzdown[]   = { LIBEXEC "midia", "luz-", NULL };
 
-/* musica no terminal: cmus no st (Alt+Shift+m); as teclas de midia falam com ele */
+/* musica: cmus no st (Alt+Shift+m). As teclas de midia controlam o player que estiver
+ * tocando: playerctl (navegador e outros, por MPRIS) ou, se nenhum responder, o cmus */
 static const char *cmuscmd[]   = { "st", "-e", "cmus", NULL };
-static const char *tocar[]     = { "cmus-remote", "-u", NULL };	/* play/pause */
-static const char *proxima[]   = { "cmus-remote", "-n", NULL };
-static const char *anterior[]  = { "cmus-remote", "-r", NULL };
-static const char *parar[]     = { "cmus-remote", "-s", NULL };
+static const char *tocar[]     = { LIBEXEC "midia", "tocar", NULL };	/* play/pause */
+static const char *proxima[]   = { LIBEXEC "midia", "proxima", NULL };
+static const char *anterior[]  = { LIBEXEC "midia", "anterior", NULL };
+static const char *parar[]     = { LIBEXEC "midia", "parar", NULL };
 
 /* autostart: o dwm sobe estes programas ao iniciar e os encerra ao sair.
  * Um comando por linha, cada um terminado em NULL; a lista termina com outro NULL.

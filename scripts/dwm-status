@@ -1,5 +1,5 @@
 #!/bin/sh
-# dwm-status - barra do dwm no FreeBSD: cpu, memoria, volume, bateria e data
+# dwm-status - barra do dwm no FreeBSD: musica, cpu, memoria, volume, bateria e data
 # Tambem avisa (notify-send/dunst) quando a bateria fica baixa: 15% e 5%.
 # No perfil desktop (sem bateria, ver perfil-maquina) a bateria some da barra
 # e nenhum aviso de bateria e mandado.
@@ -75,6 +75,29 @@ volume() {
 	fi
 }
 
+# --- musica: so aparece enquanto algo toca -----------------------------------
+# playerctl (navegador e outros, por MPRIS) primeiro; se nada tocar, o cmus
+MAX_MUSICA=40
+musica() {
+	m=""
+	if command -v playerctl >/dev/null &&
+	    [ "$(playerctl status 2>/dev/null)" = Playing ]; then
+		m=$(playerctl metadata --format '{{artist}} - {{title}}' 2>/dev/null)
+		m=${m#' - '}
+	elif command -v cmus-remote >/dev/null; then
+		m=$(cmus-remote -Q 2>/dev/null | awk '
+			/^status / { st = $2 }
+			/^tag artist / { sub(/^tag artist /, ""); ar = $0 }
+			/^tag title / { sub(/^tag title /, ""); ti = $0 }
+			END { if (st == "playing") print (ar != "" ? ar " - " ti : ti) }')
+	fi
+	[ -n "$m" ] || return
+	if [ "${#m}" -gt "$MAX_MUSICA" ]; then
+		m="$(printf '%s' "$m" | cut -c1-$((MAX_MUSICA - 1)))~"
+	fi
+	printf 'mus %s | ' "$m"
+}
+
 # --- aviso de bateria baixa (uma vez por nivel, ate voltar a carregar) -------
 avisado=""	# "", "15" ou "5"
 avisar_bateria() {	# $1 = pct
@@ -96,14 +119,14 @@ avisar_bateria() {	# $1 = pct
 
 linha() {	# $1 = cpu %, $2 = bateria %
 	if [ "$PERFIL" = desktop ]; then
-		printf ' cpu %s%% | %s | %s | %s ' \
-		    "$1" "$(memoria)" "$(volume)" "$(date '+%d/%m %H:%M')"
+		printf ' %scpu %s%% | %s | %s | %s ' \
+		    "$(musica)" "$1" "$(memoria)" "$(volume)" "$(date '+%d/%m %H:%M')"
 		return
 	fi
 	tomada=""
 	na_tomada && tomada="+"
-	printf ' cpu %s%% | %s | %s | bat %s%%%s | %s ' \
-	    "$1" "$(memoria)" "$(volume)" "${2:-?}" "$tomada" "$(date '+%d/%m %H:%M')"
+	printf ' %scpu %s%% | %s | %s | bat %s%%%s | %s ' \
+	    "$(musica)" "$1" "$(memoria)" "$(volume)" "${2:-?}" "$tomada" "$(date '+%d/%m %H:%M')"
 }
 
 antes=$(cp_time)

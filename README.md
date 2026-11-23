@@ -142,7 +142,7 @@ Sem `~/.fehbg`, fica o fundo sólido `#282828`.
 
 ## Multimídia no terminal
 
-O grupo `midia` do `install.sh` instala `mpv cmus yt-dlp mixertui ffmpeg`, e o stow aplica a configuração do cmus e do mpv.
+O grupo `midia` do `install.sh` instala `mpv cmus playerctl yt-dlp mixertui ffmpeg`, e o stow aplica a configuração do cmus e do mpv.
 
 | Programa | Para quê |
 |---|---|
@@ -152,11 +152,18 @@ O grupo `midia` do `install.sh` instala `mpv cmus yt-dlp mixertui ffmpeg`, e o s
 | `mixertui` | Mixer do OSS em tela cheia no terminal |
 | `ffmpeg` | Converter áudio e vídeo |
 
-| Tecla (T420: Fn + setas) | Ação no cmus |
+As teclas de mídia (no T420: Fn + setas) e a barra falam com o player que estiver tocando:
+primeiro o `playerctl` (navegador e outros players que falam MPRIS, pelo D-Bus); se nenhum
+responder, o `cmus`.
+
+| Tecla | Ação |
 |---|---|
-| Play/Pause | `cmus-remote -u` |
-| Próxima / anterior | `cmus-remote -n` / `-r` |
-| Stop | `cmus-remote -s` |
+| Play/Pause | `midia tocar` → `playerctl play-pause` ou `cmus-remote -u` |
+| Próxima / anterior | `midia proxima` / `midia anterior` |
+| Stop | `midia parar` |
+
+Enquanto algo toca, a barra mostra `mus artista - título` (até 40 letras) antes da cpu.
+Para saber se o navegador aparece: com um vídeo tocando, `playerctl -l` deve listar `firefox`.
 
 ## Barra
 
