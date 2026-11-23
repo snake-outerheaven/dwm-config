@@ -14,7 +14,8 @@ fonte Cascadia Code e áreas de trabalho em algarismos romanos (I a IX).
 | `dwm/` | Código-fonte do dwm 6.4 com o `config.h` pronto. **Não é pacote do stow**: compila e instala |
 | `st/` | st 0.9.3 (base [st-flexipatch](https://github.com/bakkeby/st-flexipatch)) com jeito de alacritty. Compila e instala |
 | `install.sh` | Na raiz: instala pacotes, compila dwm e st, instala scripts e arquivos no sistema e aplica o `x11` com o stow |
-| `x11/` | Pacote do stow: só `.xinitrc` e `.xsession`. São os únicos arquivos que o setup põe no `$HOME` |
+| `x11/` | Pacote do stow: `.xinitrc` e `.xsession` |
+| `cmus/`, `mpv/` | Pacotes do stow: `~/.config/cmus/rc` e `~/.config/mpv/mpv.conf`, na Gruvbox e com som pelo OSS |
 | `scripts/` | `dwm-status`, `printar`, `midia`, `perfil-maquina`. Instalados em `/usr/local/libexec/dwm-config/`, **nunca** no seu `~/bin` |
 | `share/` | `Xresources` e `dunstrc`, instalados em `/usr/local/share/dwm-config/` |
 | `patches/` | Os diffs aplicados no dwm e no st, para reaplicar numa árvore limpa |
@@ -139,6 +140,24 @@ feh --bg-fill ~/flores.jpg    # mostra agora e grava o ~/.fehbg
 
 Sem `~/.fehbg`, fica o fundo sólido `#282828`.
 
+## Multimídia no terminal
+
+O grupo `midia` do `install.sh` instala `mpv cmus yt-dlp mixertui ffmpeg`, e o stow aplica a configuração do cmus e do mpv.
+
+| Programa | Para quê |
+|---|---|
+| `cmus` | Música (`Alt+Shift+m`). Na primeira vez: `:add ~/Music` e `5` para ver os arquivos |
+| `mpv` | Vídeo e áudio: `mpv arquivo.mkv` |
+| `yt-dlp` | Baixar ou tocar vídeo: `mpv "URL"` usa o yt-dlp sozinho |
+| `mixertui` | Mixer do OSS em tela cheia no terminal |
+| `ffmpeg` | Converter áudio e vídeo |
+
+| Tecla (T420: Fn + setas) | Ação no cmus |
+|---|---|
+| Play/Pause | `cmus-remote -u` |
+| Próxima / anterior | `cmus-remote -n` / `-r` |
+| Stop | `cmus-remote -s` |
+
 ## Barra
 
 O `dwm-status` (em `/usr/local/libexec/dwm-config/`) escreve na barra a cada 5 s: cpu (`kern.cp_time`), memória ativa
@@ -176,6 +195,7 @@ echo desktop | sudo tee /etc/dwm-config/perfil    # ou troca à mão; vale no pr
 | `Alt+w` | Firefox |
 | `Alt+e` | ranger (arquivos) no st |
 | `Alt+v` | Histórico do clipboard (copyq) |
+| `Alt+Shift+m` | Música: cmus no st |
 | `Alt+j` / `Alt+k` | Próxima / anterior janela |
 | `Alt+Shift+j` / `Alt+Shift+k` | Move a janela na pilha (movestack) |
 | `Alt+h` / `Alt+l` | Diminui / aumenta a área principal |

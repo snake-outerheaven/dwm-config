@@ -104,6 +104,13 @@ static const char *volmute[]   = { LIBEXEC "midia", "mudo", NULL };
 static const char *luzup[]     = { LIBEXEC "midia", "luz+", NULL };
 static const char *luzdown[]   = { LIBEXEC "midia", "luz-", NULL };
 
+/* musica no terminal: cmus no st (Alt+Shift+m); as teclas de midia falam com ele */
+static const char *cmuscmd[]   = { "st", "-e", "cmus", NULL };
+static const char *tocar[]     = { "cmus-remote", "-u", NULL };	/* play/pause */
+static const char *proxima[]   = { "cmus-remote", "-n", NULL };
+static const char *anterior[]  = { "cmus-remote", "-r", NULL };
+static const char *parar[]     = { "cmus-remote", "-s", NULL };
+
 /* autostart: o dwm sobe estes programas ao iniciar e os encerra ao sair.
  * Um comando por linha, cada um terminado em NULL; a lista termina com outro NULL.
  * Programa que nao estiver instalado e so ignorado. */
@@ -133,6 +140,11 @@ static const Key keys[] = {
 	{ 0,              XF86XK_AudioMute,        spawn,          {.v = volmute } },
 	{ 0,              XF86XK_MonBrightnessUp,  spawn,          {.v = luzup } },
 	{ 0,              XF86XK_MonBrightnessDown,spawn,          {.v = luzdown } },
+	{ MODKEY|ShiftMask,             XK_m,      spawn,          {.v = cmuscmd } },
+	{ 0,              XF86XK_AudioPlay,        spawn,          {.v = tocar } },
+	{ 0,              XF86XK_AudioNext,        spawn,          {.v = proxima } },
+	{ 0,              XF86XK_AudioPrev,        spawn,          {.v = anterior } },
+	{ 0,              XF86XK_AudioStop,        spawn,          {.v = parar } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
