@@ -13,7 +13,8 @@ fonte Cascadia Code e áreas de trabalho em algarismos romanos (I a IX).
 |---|---|
 | `dwm/` | Código-fonte do dwm 6.4 com o `config.h` pronto. **Não é pacote do stow**: compila e instala |
 | `st/` | st 0.9.3 (base [st-flexipatch](https://github.com/bakkeby/st-flexipatch)) com jeito de alacritty. Compila e instala |
-| `install.sh` | Na raiz: instala pacotes, compila dwm e st, instala scripts e arquivos no sistema e aplica o `x11` com o stow |
+| `install.sh` | Na raiz: instala pacotes, compila dwm e st, instala scripts e arquivos no sistema e aplica `x11`, `cmus` e `mpv` com o stow |
+| `uninstall.sh` | Na raiz: desfaz o `install.sh` (menos os pacotes); `-n` simula |
 | `x11/` | Pacote do stow: `.xinitrc` e `.xsession` |
 | `cmus/`, `mpv/` | Pacotes do stow: `~/.config/cmus/rc` e `~/.config/mpv/mpv.conf`, na Gruvbox e com som pelo OSS |
 | `scripts/` | `dwm-status`, `printar`, `midia`, `perfil-maquina`. Instalados em `/usr/local/libexec/dwm-config/`, **nunca** no seu `~/bin` |
@@ -86,6 +87,20 @@ Em outro sistema, troque os caminhos na linha de comando (vale para os dois):
 ```sh
 make X11INC=/usr/include X11LIB=/usr/lib FREETYPEINC=/usr/include/freetype2 KVMLIB=
 ```
+
+## Desinstalação
+
+```sh
+cd ~/dwm-config
+sh uninstall.sh -n     # mostra o que vai sair
+sh uninstall.sh
+```
+
+| Sai | Fica |
+|---|---|
+| `dwm` e `st` em `/usr/local/bin` e as manpages | Os pacotes do `pkg` (o script mostra o `pkg delete` sugerido) |
+| `/usr/local/libexec/dwm-config`, `/usr/local/share/dwm-config`, `/etc/dwm-config` | `~/.dotfiles-backup-*` (os seus arquivos antigos) |
+| Os links do stow no `$HOME` que apontam para este repo | Arquivos seus nas mesmas pastas, e o `~/bin` |
 
 ## Patches aplicados
 
