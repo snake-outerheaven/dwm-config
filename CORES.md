@@ -98,3 +98,12 @@ Fundo `#282828` em todas, barra de progresso `#fabd2f`.
 ```sh
 printf '\033[48;2;250;189;47m        \033[0m\n'   # mostra #fabd2f (250,189,47 em decimal)
 ```
+
+## Outros apps: GTK, zathura e CopyQ
+
+| App | Arquivo em `share/` | Cores |
+|---|---|---|
+| GTK3 (Firefox, LibreOffice) | `xdg/gtk-3.0/settings.ini` | Adwaita escuro (`GTK_THEME=Adwaita:dark` no `.xinitrc`), ícones Papirus-Dark |
+| GTK2 | `gtkrc-2.0` | Adwaita-dark |
+| zathura | `xdg/zathurarc` | Fundo `#282828`, texto `#ebdbb2`, barra `#504945`, destaque `#fabd2f`; o PDF é recolorido (`Ctrl+r` volta ao original) |
+| CopyQ | `copyq-gruvbox.ini` | Fundo `#282828`, seleção `#fabd2f`; aplicar uma vez com `copyq loadTheme /usr/local/share/dwm-config/copyq-gruvbox.ini` |

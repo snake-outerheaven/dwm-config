@@ -1,0 +1,5 @@
+# /usr/local/share/dwm-config/gtkrc-2.0 - apps GTK2 no tema escuro
+# O .xinitrc aponta o GTK2_RC_FILES para ca e, depois, para o seu ~/.gtkrc-2.0 (que vence).
+# Pacotes: gnome-themes-extra (Adwaita-dark do GTK2) e papirus-icon-theme
+gtk-theme-name="Adwaita-dark"
+gtk-icon-theme-name="Papirus-Dark"

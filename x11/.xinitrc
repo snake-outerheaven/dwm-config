@@ -8,6 +8,13 @@ if [ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ] && command -v dbus-launch >/dev/null; 
 	eval "$(dbus-launch --sh-syntax --exit-with-session)"
 fi
 
+# tema escuro para GTK (Firefox, LibreOffice) e zathura, lido de /usr/local/share/dwm-config;
+# os seus arquivos em ~/.config e o seu ~/.gtkrc-2.0, se existirem, vencem
+export XDG_CONFIG_DIRS="/usr/local/share/dwm-config/xdg:${XDG_CONFIG_DIRS:-/etc/xdg}"
+export GTK2_RC_FILES="/usr/local/share/dwm-config/gtkrc-2.0:$HOME/.gtkrc-2.0"
+# o LibreOffice so fica escuro com o tema forcado; defina GTK_THEME antes para trocar
+export GTK_THEME="${GTK_THEME:-Adwaita:dark}"
+
 # cores do terminal: as do dwm-config e, por cima, as suas (se houver)
 xrdb -merge /usr/local/share/dwm-config/Xresources
 [ -f ~/.Xresources ] && xrdb -merge ~/.Xresources

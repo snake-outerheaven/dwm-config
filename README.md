@@ -14,7 +14,7 @@ fonte Cascadia Code e áreas de trabalho em algarismos romanos (I a IX).
 | `install.sh` | Na raiz: instala pacotes, compila dwm e st, instala scripts e arquivos no sistema e aplica o `x11` com o stow |
 | `x11/` | Pacote do stow: só `.xinitrc` e `.xsession`. São os únicos arquivos que o setup põe no `$HOME` |
 | `scripts/` | `dwm-status`, `printar`, `midia`, `perfil-maquina`. Instalados em `/usr/local/libexec/dwm-config/`, **nunca** no seu `~/bin` |
-| `share/` | `Xresources` e `dunstrc`, instalados em `/usr/local/share/dwm-config/` |
+| `share/` | `Xresources`, `dunstrc`, temas escuros (GTK, zathura, CopyQ), instalados em `/usr/local/share/dwm-config/` |
 | `sistema/openbsd/` | Arquivo de sistema para bloquear a tela antes de suspender. Fora do stow: instalar como root |
 | `patches/` | Os diffs aplicados no dwm e no st, para reaplicar numa árvore limpa |
 | `CORES.md` | Guia de todas as cores, para mexer sozinho |
@@ -61,7 +61,10 @@ cd ../st && make && doas make install
 cd ..
 doas install -d /usr/local/libexec/dwm-config /usr/local/share/dwm-config /etc/dwm-config
 doas install -m 755 scripts/* /usr/local/libexec/dwm-config/
-doas install -m 644 share/* /usr/local/share/dwm-config/
+(cd share && find . -type f) | while read -r f; do
+	doas install -d "/usr/local/share/dwm-config/$(dirname "$f")"
+	doas install -m 644 "share/$f" "/usr/local/share/dwm-config/$f"
+done
 stow --no-folding x11                # só ~/.xinitrc e ~/.xsession
 startx
 ```
@@ -128,6 +131,22 @@ O dmenu fica como vem. O st foi ajustado para lembrar o alacritty:
 Patches ligados em `st/patches.h`: reflow, scrollback (+ mouse), clipboard,
 keyboard_select, boxdraw, anysize e xresources. Para ligar ou desligar outro,
 mude o `0`/`1` lá e recompile (`cd st && make && doas make install`).
+
+## Tema escuro nos outros apps
+
+O Gruvbox não fica só no dwm e no st. O `.xinitrc` aponta os apps para os arquivos em
+`/usr/local/share/dwm-config`, sem pôr nada no seu `$HOME`:
+
+| App | Arquivo | Como chega |
+|---|---|---|
+| GTK3 (Firefox, LibreOffice) | `xdg/gtk-3.0/settings.ini` | `XDG_CONFIG_DIRS` e `GTK_THEME=Adwaita:dark` no `.xinitrc` (ícones Papirus-Dark) |
+| GTK2 | `gtkrc-2.0` | `GTK2_RC_FILES` no `.xinitrc` |
+| zathura | `xdg/zathurarc` | `XDG_CONFIG_DIRS` (Gruvbox; `Ctrl+r` liga e desliga o PDF escuro) |
+| CopyQ | `copyq-gruvbox.ini` | Uma vez: `copyq loadTheme /usr/local/share/dwm-config/copyq-gruvbox.ini` |
+
+Um arquivo seu em `~/.config/zathura/` ou `~/.gtkrc-2.0`, se existir, vence. O tema GTK3 é forçado pelo
+`GTK_THEME` (é o único jeito de o LibreOffice ficar escuro); para usar outro, defina `GTK_THEME` antes do `startx`.
+Pacotes (grupo opcional do `install.sh`): `gnome-themes-extra` e `papirus-icon-theme`.
 
 ## Wallpaper
 

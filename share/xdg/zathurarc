@@ -1,0 +1,30 @@
+# /usr/local/share/dwm-config/xdg/zathurarc - PDF em Gruvbox dark, destaque amarelo
+# O zathura le o zathurarc de cada pasta do XDG_CONFIG_DIRS (o .xinitrc poe esta nele);
+# um ~/.config/zathura/zathurarc seu, se existir, vence.
+set font                    "Cascadia Code 10"
+set selection-clipboard     clipboard
+set recolor                 true
+set recolor-keephue         true
+set default-bg              "#282828"
+set default-fg              "#ebdbb2"
+set statusbar-bg            "#504945"
+set statusbar-fg            "#ebdbb2"
+set inputbar-bg             "#282828"
+set inputbar-fg             "#fabd2f"
+set notification-bg         "#282828"
+set notification-fg         "#fabd2f"
+set notification-error-bg   "#282828"
+set notification-error-fg   "#fb4934"
+set highlight-color         "#fabd2f"
+set highlight-active-color  "#fe8019"
+set completion-bg           "#504945"
+set completion-fg           "#ebdbb2"
+set completion-highlight-bg "#fabd2f"
+set completion-highlight-fg "#282828"
+set index-bg                "#282828"
+set index-fg                "#ebdbb2"
+set index-active-bg         "#fabd2f"
+set index-active-fg         "#282828"
+set recolor-lightcolor      "#282828"
+set recolor-darkcolor       "#ebdbb2"
+# Ctrl+r liga e desliga o modo escuro do PDF

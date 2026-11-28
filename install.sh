@@ -18,7 +18,7 @@
 # O que vai para onde:
 #   /usr/local/bin/dwm, /usr/local/bin/st          compilados do repositorio
 #   /usr/local/libexec/dwm-config/                 scripts (barra, print, midia, perfil)
-#   /usr/local/share/dwm-config/                   Xresources, dunstrc e fundo.jpg (foto de fundo)
+#   /usr/local/share/dwm-config/                   Xresources, dunstrc, temas GTK/zathura/CopyQ
 #   /etc/dwm-config/perfil                         desktop ou notebook
 #   ~/.xinitrc e ~/.xsession                       unicos arquivos no $HOME (stow)
 # O seu ~/bin nunca e tocado. Arquivos que atrapalham o stow vao para ~/.dotfiles-backup-DATA.
@@ -40,7 +40,7 @@ case "$SO" in
 OpenBSD)
 	# i3lock e essencial: Alt+Shift+x e o bloqueio por inatividade (xidle) dependem dele
 	ESSENCIAIS="dmenu stow i3lock"
-	OPCIONAIS="git vim--no_x11 fastfetch cascadia-code feh scrot xdg-user-dirs dbus dunst libnotify copyq ranger firefox"
+	OPCIONAIS="git vim--no_x11 fastfetch cascadia-code feh scrot xdg-user-dirs dbus dunst libnotify copyq ranger firefox gnome-themes-extra papirus-icon-theme"
 	# nomes conferidos no openports.pl
 	G_ESCRITORIO="libreoffice libreoffice-i18n-pt-br zathura zathura-pdf-mupdf"
 	G_MIDIA="mpv"
@@ -154,8 +154,11 @@ rodar doas install -d -m 755 "$LIBEXEC" "$SHARE" /etc/dwm-config || { aviso "Fal
 for f in "$REPO"/scripts/*; do
 	rodar doas install -m 755 "$f" "$LIBEXEC/" || { aviso "Falha ao instalar $f"; exit 1; }
 done
-for f in "$REPO"/share/*; do
-	rodar doas install -m 644 "$f" "$SHARE/" || { aviso "Falha ao instalar $f"; exit 1; }
+# share/ tem subpastas (xdg/gtk-3.0): a arvore e copiada como esta
+for f in $(cd "$REPO/share" && find . -type f); do
+	f=${f#./}
+	rodar doas install -d -m 755 "$SHARE/$(dirname "$f")" || { aviso "Falha ao criar $SHARE/$(dirname "$f")"; exit 1; }
+	rodar doas install -m 644 "$REPO/share/$f" "$SHARE/$f" || { aviso "Falha ao instalar $f"; exit 1; }
 done
 
 # 4c. perfil da maquina: notebook (com bateria) ou desktop
